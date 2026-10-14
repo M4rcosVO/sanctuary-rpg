@@ -16,8 +16,10 @@ import {
   ChevronUp,
   Sparkles,
   BookOpen,
+  User,
 } from 'lucide-react'
 import type { Character, RollRequest, SkillProficiency } from '../../types/character'
+import { ImageGallery } from '../ImageGallery'
 
 interface HomeViewProps {
   character: Character
@@ -168,15 +170,24 @@ export const HomeView: FC<HomeViewProps> = ({
         <div className="pointer-events-none absolute -right-10 -top-10 w-48 h-48 rounded-full bg-red-600/20 blur-3xl" />
 
         <div className="flex items-start space-x-4">
-          {/* Avatar com Nível */}
-          <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-black border-2 border-red-700/60 shadow-[0_0_20px_rgba(255,0,0,0.4)] flex-shrink-0 flex items-center justify-center">
-            <img
-              src="/helm.png"
-              alt="Avatar do Personagem"
-              className="w-16 h-16 object-contain filter drop-shadow"
+          {/* Avatar com Galeria */}
+          <div className="relative flex-shrink-0">
+            <ImageGallery
+              profileImageUrl={character.profileImageUrl}
+              imageGallery={character.imageGallery ?? []}
+              placeholderIcon={<User size={32} className="text-zinc-600" />}
+              label={character.name}
+              thumbSize="w-20 h-20"
+              onUpdateProfile={(url) =>
+                onUpdateCharacter((prev) => ({ ...prev, profileImageUrl: url }))
+              }
+              onUpdateGallery={(gallery) =>
+                onUpdateCharacter((prev) => ({ ...prev, imageGallery: gallery }))
+              }
             />
+            {/* Badge de Nível */}
             {isEditing ? (
-              <div className="absolute bottom-1 right-1 flex items-center bg-red-700 rounded-md px-1">
+              <div className="absolute -bottom-2 -right-2 flex items-center bg-red-700 rounded-full px-1.5 py-0.5 shadow-lg">
                 <span className="text-[9px] font-bold text-white mr-0.5">Nv.</span>
                 <input
                   type="number"
@@ -190,7 +201,7 @@ export const HomeView: FC<HomeViewProps> = ({
                 />
               </div>
             ) : (
-              <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-md bg-red-700 text-[10px] font-bold text-white">
+              <span className="absolute -bottom-2 -right-2 px-1.5 py-0.5 rounded-full bg-red-700 text-[10px] font-bold text-white shadow-lg">
                 Nv. {character.level}
               </span>
             )}

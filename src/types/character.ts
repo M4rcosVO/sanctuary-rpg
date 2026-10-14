@@ -53,6 +53,9 @@ export interface TacticalWeapon {
   dmgBonus: number
   iconType: 'pistol' | 'rifle' | 'sword' | 'gadget' | 'grenade'
   description: string
+  // Galeria de imagens da arma
+  profileImageUrl?: string
+  imageGallery?: string[]
 }
 
 export type ItemCategory = 'Consumível' | 'Equipamento' | 'Ferramenta' | 'Relíquia' | 'Componente'
@@ -111,6 +114,9 @@ export interface Character {
     infusionsActive: { current: number; max: number }
     activeConditions: string[]
   }
+  // Galeria de imagens do personagem
+  profileImageUrl?: string
+  imageGallery?: string[]
 }
 
 export interface RollRequest {
