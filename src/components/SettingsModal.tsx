@@ -1,5 +1,5 @@
 import { useState, type FC, type ChangeEvent } from 'react'
-import { X, Download, Upload, CheckCircle2, AlertTriangle, FileJson } from 'lucide-react'
+import { X, Download, Upload, CheckCircle2, AlertTriangle, FileJson, User, BookOpen } from 'lucide-react'
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -7,6 +7,8 @@ interface SettingsModalProps {
   onExport: () => void
   onImport: (jsonData: string) => void
   onLogout: () => void
+  onChangeCharacter?: () => void
+  onChangeSystem?: () => void
 }
 
 export const SettingsModal: FC<SettingsModalProps> = ({
@@ -15,6 +17,8 @@ export const SettingsModal: FC<SettingsModalProps> = ({
   onExport,
   onImport,
   onLogout,
+  onChangeCharacter,
+  onChangeSystem,
 }) => {
   const [importStatus, setImportStatus] = useState<string | null>(null)
   const [errorStatus, setErrorStatus] = useState<string | null>(null)
@@ -57,7 +61,7 @@ export const SettingsModal: FC<SettingsModalProps> = ({
               <h2 className="text-lg font-bold text-white tracking-wide" style={{ fontFamily: "'Cinzel', serif" }}>
                 Configurações & Backup
               </h2>
-              <p className="text-xs text-zinc-400">Exportar e importar dados do personagem</p>
+              <p className="text-xs text-zinc-400">Exportar e importar dados do Santuário</p>
             </div>
           </div>
           <button
@@ -83,6 +87,55 @@ export const SettingsModal: FC<SettingsModalProps> = ({
           </div>
         )}
 
+        {/* Gestão de Personagem & Sistema */}
+        <div className="mt-5 space-y-2.5">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 px-1">
+            Campanha & Personagem
+          </h3>
+
+          {onChangeCharacter && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose()
+                onChangeCharacter()
+              }}
+              className="w-full p-3.5 rounded-2xl bg-black/50 hover:bg-zinc-900 border border-white/10 hover:border-red-600/40 transition-all flex items-center justify-between group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 rounded-xl bg-zinc-900 text-zinc-300 group-hover:text-red-400">
+                  <User size={16} />
+                </div>
+                <span className="text-xs font-bold text-zinc-200 group-hover:text-white">
+                  Trocar de Personagem
+                </span>
+              </div>
+              <span className="text-[10px] text-zinc-500 font-semibold">Salazar Von Ataraxia</span>
+            </button>
+          )}
+
+          {onChangeSystem && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose()
+                onChangeSystem()
+              }}
+              className="w-full p-3.5 rounded-2xl bg-black/50 hover:bg-zinc-900 border border-white/10 hover:border-red-600/40 transition-all flex items-center justify-between group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 rounded-xl bg-zinc-900 text-zinc-300 group-hover:text-red-400">
+                  <BookOpen size={16} />
+                </div>
+                <span className="text-xs font-bold text-zinc-200 group-hover:text-white">
+                  Trocar Sistema de Regras
+                </span>
+              </div>
+              <span className="text-[10px] text-zinc-500 font-semibold">Configurar</span>
+            </button>
+          )}
+        </div>
+
         {/* Backup Actions */}
         <div className="mt-5 space-y-3">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 px-1">
@@ -101,9 +154,9 @@ export const SettingsModal: FC<SettingsModalProps> = ({
               </div>
               <div>
                 <span className="block text-sm font-semibold text-zinc-200 group-hover:text-white">
-                  Exportar Personagem JSON
+                  Exportar Ficha em JSON
                 </span>
-                <span className="text-xs text-zinc-500">Salvar ficha e inventário como backup local</span>
+                <span className="text-xs text-zinc-500">Salvar ficha, atributos e moedas como backup local</span>
               </div>
             </div>
           </button>
@@ -116,7 +169,7 @@ export const SettingsModal: FC<SettingsModalProps> = ({
               </div>
               <div>
                 <span className="block text-sm font-semibold text-zinc-200 group-hover:text-white">
-                  Importar Personagem JSON
+                  Importar Ficha em JSON
                 </span>
                 <span className="text-xs text-zinc-500">Carregar dados salvos anteriormente</span>
               </div>
@@ -130,26 +183,12 @@ export const SettingsModal: FC<SettingsModalProps> = ({
           </label>
         </div>
 
-        {/* Sistema & Preferências */}
+        {/* Sessão */}
         <div className="mt-6 pt-5 border-t border-white/10 space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 px-1">
-            Geral
-          </h3>
-
-          <div className="p-4 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-zinc-200">Tema Grim Dark</span>
-              <p className="text-xs text-zinc-500">Aparência gótica com sombras carmesim ativas</p>
-            </div>
-            <span className="px-2.5 py-1 rounded-full bg-red-950 text-red-400 border border-red-800/40 text-xs font-semibold">
-              Ativo
-            </span>
-          </div>
-
           <button
             type="button"
             onClick={onLogout}
-            className="w-full mt-2 py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-red-950/60 text-zinc-400 hover:text-red-300 border border-white/5 hover:border-red-900/40 transition-all text-xs font-semibold uppercase tracking-wider"
+            className="w-full py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-red-950/60 text-zinc-400 hover:text-red-300 border border-white/5 hover:border-red-900/40 transition-all text-xs font-semibold uppercase tracking-wider"
           >
             Sair da Sessão (Tela de Entrada)
           </button>

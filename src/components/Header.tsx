@@ -20,12 +20,12 @@ export const Header: React.FC<HeaderProps> = ({
           type="button"
           onClick={onLogoClick}
           className="flex items-center space-x-2 group focus:outline-none"
-          title="Sanctuary Home"
+          title="Santuário Home"
         >
           <div className="relative w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center bg-zinc-900 border border-white/10 group-hover:border-red-600/50 transition-colors shadow-[0_0_10px_rgba(255,0,0,0.2)]">
             <img
               src="/helm.png"
-              alt="Sanctuary Helmet Logo"
+              alt="Santuário Elmo Logo"
               className="w-7 h-7 object-contain group-hover:scale-110 transition-transform duration-200"
             />
           </div>
