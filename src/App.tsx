@@ -8,8 +8,8 @@ import { DiceRollerModal } from './components/DiceRollerModal'
 import { SettingsModal } from './components/SettingsModal'
 import { HomeView } from './components/views/HomeView'
 import { ArsenalView } from './components/views/ArsenalView'
-import { CalendarView } from './components/views/CalendarView'
-import { DocumentsView } from './components/views/DocumentsView'
+import { InventoryView } from './components/views/InventoryView'
+import { TacticalView } from './components/views/TacticalView'
 import type { Character, SystemType, RollRequest, CoinType } from './types/character'
 
 type AuthStep = 'auth' | 'system-select' | 'character-select' | 'app'
@@ -24,7 +24,7 @@ export function App() {
   // Personagem Selecionado
   const [selectedCharacterId, setSelectedCharacterId] = useState<string>('salazar-1')
 
-  // Aba ativa na navegação inferior
+  // Aba ativa na navegação inferior (Ficha, Arsenal, Inventário, Tático)
   const [currentTab, setCurrentTab] = useState<NavTab>('home')
 
   // Estado da Gaveta/Modal do Rolador de Dados
@@ -34,52 +34,212 @@ export function App() {
   // Estado do Modal de Configurações
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false)
 
-  // Ficha Padrão: Salazar Von Ataraxia (Scholar / Engineer)
+  // Ficha Completa de D&D 5e: Salazar Von Ataraxia (Scholar / Engineer)
   const [characters, setCharacters] = useState<Character[]>([
     {
       id: 'salazar-1',
       name: 'Salazar Von Ataraxia',
       concept: 'Scholar / Engineer',
       system: 'dnd5e',
-      systemName: 'D&D 5e • Artífice',
+      systemName: 'D&D 5e • Artífice / Engenheiro',
       level: 5,
-      hp: { current: 48, max: 48 },
-      energy: { current: 36, max: 40, label: 'Pontos de Ação' },
+      race: 'Humano Variante',
+      background: 'Erudito (Guild Artisan)',
+      alignment: 'Neutro e Bom',
+      xp: {
+        current: 6500,
+        next: 14000,
+      },
+      hp: {
+        current: 48,
+        max: 48,
+        temp: 0,
+      },
+      speed: '9m (30ft)',
       ca: 15,
       initiative: 3,
       proficiency: 3,
+      passivePerception: 14,
       attributes: [
-        { id: 'for', name: 'Força', short: 'FOR', value: 10, modifier: 0 },
-        { id: 'des', name: 'Destreza', short: 'DES', value: 16, modifier: 3 },
-        { id: 'con', name: 'Constituição', short: 'CON', value: 14, modifier: 2 },
-        { id: 'int', name: 'Inteligência', short: 'INT', value: 18, modifier: 4 },
-        { id: 'sab', name: 'Sabedoria', short: 'SAB', value: 13, modifier: 1 },
-        { id: 'car', name: 'Carisma', short: 'CAR', value: 12, modifier: 1 },
+        { id: 'for', name: 'Força', short: 'FOR', value: 10, modifier: 0, savingThrowProficient: false },
+        { id: 'des', name: 'Destreza', short: 'DES', value: 16, modifier: 3, savingThrowProficient: false },
+        { id: 'con', name: 'Constituição', short: 'CON', value: 14, modifier: 2, savingThrowProficient: true },
+        { id: 'int', name: 'Inteligência', short: 'INT', value: 18, modifier: 4, savingThrowProficient: true },
+        { id: 'sab', name: 'Sabedoria', short: 'SAB', value: 13, modifier: 1, savingThrowProficient: false },
+        { id: 'car', name: 'Carisma', short: 'CAR', value: 12, modifier: 1, savingThrowProficient: false },
       ],
-      attacks: [
+      skills: [
+        { id: 'sk-acrobacia', name: 'Acrobacia', attributeShort: 'DES', proficiency: 'none' },
+        { id: 'sk-animais', name: 'Adestrar Animais', attributeShort: 'SAB', proficiency: 'none' },
+        { id: 'sk-arcanismo', name: 'Arcanismo', attributeShort: 'INT', proficiency: 'expertise' },
+        { id: 'sk-atletismo', name: 'Atletismo', attributeShort: 'FOR', proficiency: 'none' },
+        { id: 'sk-atuacao', name: 'Atuação', attributeShort: 'CAR', proficiency: 'none' },
+        { id: 'sk-enganacao', name: 'Enganação', attributeShort: 'CAR', proficiency: 'none' },
+        { id: 'sk-historia', name: 'História', attributeShort: 'INT', proficiency: 'proficient' },
+        { id: 'sk-intimidacao', name: 'Intimidação', attributeShort: 'CAR', proficiency: 'none' },
+        { id: 'sk-intuicao', name: 'Intuição', attributeShort: 'SAB', proficiency: 'proficient' },
+        { id: 'sk-investigacao', name: 'Investigação', attributeShort: 'INT', proficiency: 'expertise' },
+        { id: 'sk-medicina', name: 'Medicina', attributeShort: 'SAB', proficiency: 'none' },
+        { id: 'sk-natureza', name: 'Natureza', attributeShort: 'INT', proficiency: 'proficient' },
+        { id: 'sk-percepcao', name: 'Percepção', attributeShort: 'SAB', proficiency: 'proficient' },
+        { id: 'sk-persuasao', name: 'Persuasão', attributeShort: 'CAR', proficiency: 'none' },
+        { id: 'sk-prestidigitacao', name: 'Prestidigitação', attributeShort: 'DES', proficiency: 'proficient' },
+        { id: 'sk-religiao', name: 'Religião', attributeShort: 'INT', proficiency: 'none' },
+        { id: 'sk-sobrevivencia', name: 'Sobrevivência', attributeShort: 'SAB', proficiency: 'none' },
+        { id: 'sk-furtividade', name: 'Furtividade', attributeShort: 'DES', proficiency: 'none' },
+      ],
+      languages: ['Comum', 'Anão', 'Élfico', 'Dracônico'],
+      proficienciesList: {
+        armor: ['Armaduras Leves', 'Armaduras Médias', 'Escudos'],
+        weapons: ['Armas Simples', 'Armas Marciais', 'Armas de Fogo'],
+        tools: ['Ferramentas de Engenheiro', 'Ferramentas de Ladrão', 'Ferramentas de Funileiro'],
+      },
+      features: [
         {
-          id: 'atk-1',
-          name: 'Pistola de Chispa Arcana',
-          bonus: '+7',
-          modNum: 7,
+          id: 'feat-1',
+          title: 'Pronto para a Batalha (Battle Ready)',
+          source: 'Engenharia de Combate',
+          snippet: 'Usa Inteligência no lugar de Força/Destreza em armas mágicas.',
+          description:
+            'Ao empunhar uma arma infundida ou mágica, Salazar utiliza seu modificador de Inteligência (+4) para jogadas de ataque e dano em vez de Força ou Destreza. Também ganha proficiência em armas marciais.',
+        },
+        {
+          id: 'feat-2',
+          title: 'Infusões de Artífice (Infuse Item)',
+          source: 'Artífice Nv. 5',
+          snippet: 'Sintoniza até 3 itens com poderes arcanos simultâneos.',
+          description:
+            'Salazar imbui objetos mundanos com propriedades mágicas superiores durante descansos longos. Exemplos ativos: Foco de Disparo Repetidor, Armadura da Mente Resistente e Tubo de Energia.',
+        },
+        {
+          id: 'feat-3',
+          title: 'Autômato Tático Protetor',
+          source: 'Constructo Companheiro',
+          snippet: 'Autômato auxiliar que defende e causa dano de força.',
+          description:
+            'Um autômato quadrúpede de ferro e bronze acompanha Salazar. Possui reação para impor desvantagem em ataques contra aliados próximos e pode disparar pulsos de energia concussiva sob comando bônus.',
+        },
+        {
+          id: 'feat-4',
+          title: 'Especialista em Ferramentas (Tool Expertise)',
+          source: 'Erudito do Santuário',
+          snippet: 'Dobra o bônus de proficiência com ferramentas conhecidas.',
+          description:
+            'O bônus de proficiência de Salazar é dobrado em qualquer teste de habilidade que utilize ferramentas nas quais ele possua proficiência.',
+        },
+      ],
+      tacticalWeapons: [
+        {
+          id: 'tw-1',
+          name: 'Pistola de Chispa Arcana Infundida',
+          category: 'Arma de Fogo (Mágica)',
           damage: '1d10 + 4',
-          type: 'Perfurante / Energia',
+          damageType: 'Perfurante / Força',
+          range: '18m / 54m',
+          properties: ['Mágica', 'Recarga 6', 'Disparo Repetidor', 'Leve'],
+          atkBonus: 7,
+          dmgBonus: 4,
+          iconType: 'pistol',
+          damageDice: [{ die: 'd10', count: 1 }],
+          description:
+            'Pistola artesanal calibrada com cristais ressonantes. Não requer munição mundana, gerando dardos de força autônomos ao puxar o cão.',
         },
         {
-          id: 'atk-2',
-          name: 'Chave Inglesa Reforçada',
-          bonus: '+5',
-          modNum: 5,
-          damage: '1d6 + 3',
-          type: 'Contundente',
+          id: 'tw-2',
+          name: 'Sabre Eletrocinético a Vapor',
+          category: 'Arma Marcial Corpo a Corpo',
+          damage: '1d8 + 3',
+          damageDice: [{ die: 'd8', count: 1 }],
+          damageType: 'Cortante / Elétrico',
+          range: '1.5m',
+          properties: ['Acuidade', 'Versátil (1d10)', 'Descarga Elétrica'],
+          atkBonus: 6,
+          dmgBonus: 3,
+          iconType: 'sword',
+          description:
+            'Lâmina curvada forjada em aço temperado com câmara de vapor pressurizado. Causa faíscas azuis a cada impacto.',
         },
         {
-          id: 'atk-3',
-          name: 'Engenhoca de Choque Sombrio',
-          bonus: '+7',
-          modNum: 7,
-          damage: '3d8 Elétrico',
-          type: 'CD 15 Destreza',
+          id: 'tw-3',
+          name: 'Mosquete de Precisão Repetidor',
+          category: 'Arma de Fogo Longa',
+          damage: '1d12 + 4',
+          damageDice: [{ die: 'd12', count: 1 }],
+          damageType: 'Perfurante',
+          range: '36m / 108m',
+          properties: ['Duas Mãos', 'Mira Telescópica', 'Impacto Crítico'],
+          atkBonus: 7,
+          dmgBonus: 4,
+          iconType: 'rifle',
+          description:
+            'Rifle de longo alcance construído para alvejar fraquezas estruturais de abominações e blindagens pesadas.',
+        },
+        {
+          id: 'tw-4',
+          name: 'Aparato Granular de Choque',
+          category: 'Engenhoca Tática de Área',
+          damage: '3d8',
+          damageDice: [{ die: 'd8', count: 3 }],
+          damageType: 'Elétrico',
+          range: 'Raio de 4.5m (Arremesso 18m)',
+          properties: ['CD 15 Destreza', 'Área de Choque', 'Consumível Tático'],
+          atkBonus: 7,
+          dmgBonus: 0,
+          iconType: 'grenade',
+          description:
+            'Esfera metálica com alavanca de mercúrio. Ao explodir, libera uma teia de relâmpagos arcanos paralisantes.',
+        },
+      ],
+      inventory: [
+        {
+          id: 'item-1',
+          name: 'Armadura de Couro Batido Reforçada',
+          quantity: 1,
+          category: 'Equipamento',
+          rarity: 'Incomum',
+          rarityColor: 'border-emerald-600/60 text-emerald-400 bg-emerald-950/40',
+          description: 'CA 12 + DES. Infundida com circuitos de absorção cinética.',
+          equipped: true,
+        },
+        {
+          id: 'item-2',
+          name: 'Kit de Ferramentas do Engenheiro',
+          quantity: 1,
+          category: 'Ferramenta',
+          rarity: 'Especial',
+          rarityColor: 'border-red-600/60 text-red-400 bg-red-950/40',
+          description: 'Permite criar engenhocas, reparar mecanismos e sintonizar infusões.',
+          equipped: true,
+        },
+        {
+          id: 'item-3',
+          name: 'Amuleto das Frequências Ressonantes',
+          quantity: 1,
+          category: 'Relíquia',
+          rarity: 'Raro',
+          rarityColor: 'border-blue-600/60 text-blue-400 bg-blue-950/40',
+          description: 'Concede +1 nas jogadas de salvaguarda e permite emitir pulso sônico.',
+          equipped: true,
+        },
+        {
+          id: 'item-4',
+          name: 'Frascos de Éter Alquímico Volátil',
+          quantity: 4,
+          category: 'Componente',
+          rarity: 'Comum',
+          rarityColor: 'border-zinc-700 text-zinc-400 bg-zinc-900/40',
+          description: 'Combustível para aparatos mecânicos e granadas táticas.',
+          equipped: false,
+        },
+        {
+          id: 'item-5',
+          name: 'Poção de Cura Maior',
+          quantity: 2,
+          category: 'Consumível',
+          rarity: 'Incomum',
+          rarityColor: 'border-emerald-600/60 text-emerald-400 bg-emerald-950/40',
+          description: 'Restaura 4d4 + 4 pontos de vida quando ingerida.',
+          equipped: false,
         },
       ],
       coins: [
@@ -89,7 +249,13 @@ export function App() {
         { id: 'c-pc', name: 'Cobre', symbol: 'PC', amount: 32 },
       ],
       notes:
-        'Erudito mecânico e arquiteto de engenhocas do Santuário. Especialista em forjar mecanismos autômatos e soluções arcanas para perigos mortais.',
+        'Salazar é o arquiteto chefe e erudito de engenhocas do Santuário. Carrega relatórios de campo, matrizes arcanas e esquemas de autômatos de defesa contra as ameaças do reino.',
+      tacticalState: {
+        inspiration: true,
+        gadgetSlots: { current: 4, max: 4 },
+        infusionsActive: { current: 3, max: 3 },
+        activeConditions: [],
+      },
     },
   ])
 
@@ -112,7 +278,25 @@ export function App() {
     }))
   }
 
-  // Criar novo personagem
+  // Atualizar inventário do personagem ativo
+  const handleUpdateInventory = (newItems: any[]) => {
+    handleUpdateActiveCharacter((prev) => ({
+      ...prev,
+      inventory: newItems,
+    }))
+  }
+
+  // Atualizar estado tático
+  const handleUpdateTacticalState = (
+    updater: (prev: Character['tacticalState']) => Character['tacticalState']
+  ) => {
+    handleUpdateActiveCharacter((prev) => ({
+      ...prev,
+      tacticalState: updater(prev.tacticalState),
+    }))
+  }
+
+  // Criar novo personagem para o sistema ativo
   const handleCreateNewCharacter = () => {
     const newChar: Character = {
       id: `char-${Date.now()}`,
@@ -121,41 +305,105 @@ export function App() {
       system: currentSystem,
       systemName:
         currentSystem === 'dnd5e'
-          ? 'D&D 5e'
+          ? 'D&D 5e • Guerreiro'
           : currentSystem === 't20'
-          ? 'Tormenta20'
+          ? 'Tormenta20 • Cavaleiro'
           : currentSystem === 'ordem'
-          ? 'Ordem Paranormal'
-          : 'Customizado',
+          ? 'Ordem Paranormal • Combatente'
+          : 'Customizado • Aventureiro',
       level: 1,
-      hp: { current: 20, max: 20 },
-      energy: { current: 10, max: 10, label: 'Energia' },
-      ca: 12,
+      race: 'Humano',
+      background: 'Soldado',
+      alignment: 'Neutro',
+      xp: { current: 0, next: 300 },
+      hp: { current: 12, max: 12, temp: 0 },
+      speed: '9m (30ft)',
+      ca: 14,
       initiative: 1,
       proficiency: 2,
+      passivePerception: 11,
       attributes: [
-        { id: 'for', name: 'Força', short: 'FOR', value: 14, modifier: 2 },
-        { id: 'des', name: 'Destreza', short: 'DES', value: 12, modifier: 1 },
-        { id: 'con', name: 'Constituição', short: 'CON', value: 14, modifier: 2 },
-        { id: 'int', name: 'Inteligência', short: 'INT', value: 10, modifier: 0 },
-        { id: 'sab', name: 'Sabedoria', short: 'SAB', value: 11, modifier: 0 },
-        { id: 'car', name: 'Carisma', short: 'CAR', value: 10, modifier: 0 },
+        { id: 'for', name: 'Força', short: 'FOR', value: 16, modifier: 3, savingThrowProficient: true },
+        { id: 'des', name: 'Destreza', short: 'DES', value: 12, modifier: 1, savingThrowProficient: false },
+        { id: 'con', name: 'Constituição', short: 'CON', value: 14, modifier: 2, savingThrowProficient: true },
+        { id: 'int', name: 'Inteligência', short: 'INT', value: 10, modifier: 0, savingThrowProficient: false },
+        { id: 'sab', name: 'Sabedoria', short: 'SAB', value: 12, modifier: 1, savingThrowProficient: false },
+        { id: 'car', name: 'Carisma', short: 'CAR', value: 10, modifier: 0, savingThrowProficient: false },
       ],
-      attacks: [
+      skills: [
+        { id: 'sk-acrobacia', name: 'Acrobacia', attributeShort: 'DES', proficiency: 'none' },
+        { id: 'sk-animais', name: 'Adestrar Animais', attributeShort: 'SAB', proficiency: 'none' },
+        { id: 'sk-arcanismo', name: 'Arcanismo', attributeShort: 'INT', proficiency: 'none' },
+        { id: 'sk-atletismo', name: 'Atletismo', attributeShort: 'FOR', proficiency: 'proficient' },
+        { id: 'sk-atuacao', name: 'Atuação', attributeShort: 'CAR', proficiency: 'none' },
+        { id: 'sk-enganacao', name: 'Enganação', attributeShort: 'CAR', proficiency: 'none' },
+        { id: 'sk-historia', name: 'História', attributeShort: 'INT', proficiency: 'none' },
+        { id: 'sk-intimidacao', name: 'Intimidação', attributeShort: 'CAR', proficiency: 'proficient' },
+        { id: 'sk-intuicao', name: 'Intuição', attributeShort: 'SAB', proficiency: 'none' },
+        { id: 'sk-investigacao', name: 'Investigação', attributeShort: 'INT', proficiency: 'none' },
+        { id: 'sk-medicina', name: 'Medicina', attributeShort: 'SAB', proficiency: 'none' },
+        { id: 'sk-natureza', name: 'Natureza', attributeShort: 'INT', proficiency: 'none' },
+        { id: 'sk-percepcao', name: 'Percepção', attributeShort: 'SAB', proficiency: 'proficient' },
+        { id: 'sk-persuasao', name: 'Persuasão', attributeShort: 'CAR', proficiency: 'none' },
+        { id: 'sk-prestidigitacao', name: 'Prestidigitação', attributeShort: 'DES', proficiency: 'none' },
+        { id: 'sk-religiao', name: 'Religião', attributeShort: 'INT', proficiency: 'none' },
+        { id: 'sk-sobrevivencia', name: 'Sobrevivência', attributeShort: 'SAB', proficiency: 'proficient' },
+        { id: 'sk-furtividade', name: 'Furtividade', attributeShort: 'DES', proficiency: 'none' },
+      ],
+      languages: ['Comum'],
+      proficienciesList: {
+        armor: ['Armaduras Leves', 'Armaduras Médias', 'Armaduras Pesadas', 'Escudos'],
+        weapons: ['Armas Simples', 'Armas Marciais'],
+        tools: ['Jogo de Dados'],
+      },
+      features: [
         {
-          id: `atk-${Date.now()}`,
-          name: 'Espada Curta',
-          bonus: '+4',
-          modNum: 4,
-          damage: '1d6 + 2',
-          type: 'Cortante',
+          id: 'feat-g1',
+          title: 'Estilo de Luta (Defesa)',
+          source: 'Guerreiro Nv. 1',
+          snippet: '+1 na CA quando estiver usando armadura.',
+          description: 'Enquanto estiver usando armadura, você ganha um bônus de +1 na sua Classe de Armadura.',
+        },
+      ],
+      tacticalWeapons: [
+        {
+          id: 'tw-g1',
+          name: 'Espada Longa de Aço',
+          category: 'Arma Marcial',
+          damage: '1d8 + 3',
+          damageDice: [{ die: 'd8', count: 1 }],
+          damageType: 'Cortante',
+          range: '1.5m',
+          properties: ['Versátil (1d10)'],
+          atkBonus: 5,
+          dmgBonus: 3,
+          iconType: 'sword',
+          description: 'Espada de aço forjado afiada e confiável.',
+        },
+      ],
+      inventory: [
+        {
+          id: `item-${Date.now()}-1`,
+          name: 'Cota de Malha Padrão',
+          quantity: 1,
+          category: 'Equipamento',
+          rarity: 'Comum',
+          rarityColor: 'border-zinc-700 text-zinc-400 bg-zinc-900/40',
+          description: 'Armadura pesada forjada em ferro.',
+          equipped: true,
         },
       ],
       coins: [
         { id: 'c-po', name: 'Ouro', symbol: 'PO', amount: 15 },
         { id: 'c-pp', name: 'Prata', symbol: 'PP', amount: 20 },
       ],
-      notes: 'Um aventureiro recém-chegado aos portões do Santuário.',
+      notes: 'Um guerreiro recém-chegado ao Santuário pronto para batalhar.',
+      tacticalState: {
+        inspiration: false,
+        gadgetSlots: { current: 1, max: 1 },
+        infusionsActive: { current: 0, max: 0 },
+        activeConditions: [],
+      },
     }
 
     setCharacters((prev) => [...prev, newChar])
@@ -163,7 +411,7 @@ export function App() {
     setAuthStep('app')
   }
 
-  // Click-to-Roll acionado da ficha
+  // Click-to-Roll acionado da ficha ou arsenal
   const handleTriggerRoll = (request: RollRequest) => {
     setCurrentRollRequest(request)
     setIsDiceRollerOpen(true)
@@ -198,12 +446,12 @@ export function App() {
   // Mapeamento dos títulos para o Header
   const tabTitles: Record<NavTab, string> = {
     home: 'Santuário',
-    arsenal: 'Arsenal',
-    calendar: 'Calendário',
-    documents: 'Documentos',
+    arsenal: 'Arsenal Tático',
+    inventory: 'Inventário',
+    tactical: 'Auxiliar Tático',
   }
 
-  // 1. TELA DE AUTENTICAÇÃO
+  // 1. TELA DE ENTRADA / LOGIN (FIXO: CapMarcola / Gellak@2520)
   if (authStep === 'auth') {
     return (
       <AuthScreen
@@ -214,26 +462,13 @@ export function App() {
     )
   }
 
-  // 2. ETAPA DE ONBOARDING: SELEÇÃO DE SISTEMA
+  // 2. SELEÇÃO DE SISTEMA
   if (authStep === 'system-select') {
     return (
       <SystemSelectView
         currentSystem={currentSystem}
         onSelectSystem={(sys) => {
           setCurrentSystem(sys)
-          // Atualiza a ficha padrão com o nome do sistema se necessário
-          handleUpdateActiveCharacter((prev) => ({
-            ...prev,
-            system: sys,
-            systemName:
-              sys === 'dnd5e'
-                ? 'D&D 5e • Artífice'
-                : sys === 't20'
-                ? 'Tormenta20 • Engenhoqueiro'
-                : sys === 'ordem'
-                ? 'Ordem Paranormal • Especialista'
-                : 'Customizado • Erudito',
-          }))
           setAuthStep('character-select')
         }}
         onBackToLogin={() => setAuthStep('auth')}
@@ -241,10 +476,11 @@ export function App() {
     )
   }
 
-  // 3. ETAPA DE ONBOARDING: SELEÇÃO DE PERSONAGEM (Salazar Von Ataraxia)
+  // 3. SELEÇÃO DE PERSONAGEM (Regra: Apenas personagens do sistema ativo)
   if (authStep === 'character-select') {
     return (
       <CharacterSelectView
+        currentSystem={currentSystem}
         characters={characters}
         selectedCharacterId={selectedCharacterId}
         onSelectCharacter={(charId) => {
@@ -282,15 +518,27 @@ export function App() {
         )}
         {currentTab === 'arsenal' && (
           <ArsenalView
-            coins={activeCharacter.coins}
-            onUpdateCoins={handleUpdateCoins}
+            weapons={activeCharacter.tacticalWeapons}
+            onTriggerRoll={handleTriggerRoll}
           />
         )}
-        {currentTab === 'calendar' && <CalendarView />}
-        {currentTab === 'documents' && <DocumentsView />}
+        {currentTab === 'inventory' && (
+          <InventoryView
+            coins={activeCharacter.coins}
+            onUpdateCoins={handleUpdateCoins}
+            items={activeCharacter.inventory || []}
+            onUpdateItems={handleUpdateInventory}
+          />
+        )}
+        {currentTab === 'tactical' && (
+          <TacticalView
+            tacticalState={activeCharacter.tacticalState}
+            onUpdateTacticalState={handleUpdateTacticalState}
+          />
+        )}
       </main>
 
-      {/* Barra de Navegação Inferior Flutuante */}
+      {/* Barra de Navegação Inferior Flutuante (Ficha, Arsenal, Inventário, Tático) */}
       <BottomNav
         currentTab={currentTab}
         onSelectTab={(tab) => setCurrentTab(tab)}

@@ -1,8 +1,9 @@
 import { useState, type FC } from 'react'
-import { Sparkles, Shield, Heart, Zap, ArrowRight, UserPlus, Check, ChevronLeft } from 'lucide-react'
-import type { Character } from '../../types/character'
+import { Sparkles, Shield, Heart, Zap, ArrowRight, UserPlus, Check, ChevronLeft, Lock, AlertTriangle } from 'lucide-react'
+import type { Character, SystemType } from '../../types/character'
 
 interface CharacterSelectViewProps {
+  currentSystem: SystemType
   characters: Character[]
   selectedCharacterId: string
   onSelectCharacter: (characterId: string) => void
@@ -11,16 +12,36 @@ interface CharacterSelectViewProps {
 }
 
 export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
+  currentSystem,
   characters,
   selectedCharacterId,
   onSelectCharacter,
   onCreateNewCharacter,
   onBackToSystemSelect,
 }) => {
-  const [chosenId, setChosenId] = useState<string>(selectedCharacterId || characters[0]?.id || '')
+  // Personagens compatíveis com o sistema ativo
+  const compatibleCharacters = characters.filter((c) => c.system === currentSystem)
+  const incompatibleCharacters = characters.filter((c) => c.system !== currentSystem)
+
+  // Seleciona inicialmente um compatível se disponível
+  const [chosenId, setChosenId] = useState<string>(
+    compatibleCharacters.find((c) => c.id === selectedCharacterId)?.id ||
+      compatibleCharacters[0]?.id ||
+      ''
+  )
 
   const handleConfirm = () => {
+    if (!chosenId) return
+    const char = characters.find((c) => c.id === chosenId)
+    if (char && char.system !== currentSystem) return
     onSelectCharacter(chosenId)
+  }
+
+  const systemNames: Record<SystemType, string> = {
+    dnd5e: 'D&D 5e',
+    t20: 'Tormenta20',
+    ordem: 'Ordem Paranormal',
+    custom: 'Customizado',
   }
 
   return (
@@ -33,7 +54,7 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
       <div className="relative z-10 w-full max-w-md mx-auto text-center pt-2">
         <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-red-950/70 border border-red-800/40 text-red-300 text-[11px] font-semibold uppercase tracking-wider mb-2">
           <Sparkles size={12} className="text-red-400" />
-          <span>Etapa 2 de 2 • Personagem</span>
+          <span>Etapa 2 • Seleção de Personagem ({systemNames[currentSystem]})</span>
         </div>
         <h1
           className="text-2xl sm:text-3xl font-black tracking-wide text-white"
@@ -41,14 +62,20 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
         >
           Selecione seu Personagem
         </h1>
-        <p className="text-xs text-zinc-400 mt-1 max-w-xs mx-auto">
-          Escolha uma ficha existente no Santuário ou forje um novo aventureiro.
-        </p>
+
+        {/* Banner com a Diretriz de Acesso */}
+        <div className="mt-3 p-3 rounded-2xl bg-[#141217] border border-red-900/40 text-left flex items-start space-x-2.5">
+          <AlertTriangle size={16} className="text-red-400 flex-shrink-0 mt-0.5" />
+          <p className="text-[11px] text-zinc-300 leading-relaxed">
+            <strong className="text-white">Regra de Acesso do Santuário:</strong> Personagens são estritamente vinculados ao sistema para o qual foram forjados.
+          </p>
+        </div>
       </div>
 
       {/* Lista de Personagens */}
       <div className="relative z-10 w-full max-w-md mx-auto space-y-3.5 my-6">
-        {characters.map((char) => {
+        {/* Personagens Compatíveis */}
+        {compatibleCharacters.map((char) => {
           const isSelected = chosenId === char.id
 
           return (
@@ -61,7 +88,6 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
                   : 'bg-[#131116]/80 hover:bg-[#1a171e] border-white/10 hover:border-red-900/50'
               }`}
             >
-              {/* Efeito Glow interno se selecionado */}
               {isSelected && (
                 <div className="pointer-events-none absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-red-600/20 blur-2xl" />
               )}
@@ -108,7 +134,7 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
                 </div>
               </div>
 
-              {/* Status Rápido: PV, CA, Atributos em destaque */}
+              {/* Status Rápido: PV, CA, Deslocamento */}
               <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
                 <div className="p-2 rounded-2xl bg-black/50 border border-white/5">
                   <span className="text-[9px] uppercase tracking-wider text-zinc-500 flex items-center justify-center space-x-1">
@@ -133,10 +159,10 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
                 <div className="p-2 rounded-2xl bg-black/50 border border-white/5">
                   <span className="text-[9px] uppercase tracking-wider text-zinc-500 flex items-center justify-center space-x-1">
                     <Zap size={10} className="text-amber-400 fill-amber-400" />
-                    <span>{char.energy.label}</span>
+                    <span>Deslocamento</span>
                   </span>
-                  <div className="text-sm font-bold text-white mt-0.5">
-                    <span className="text-amber-400">{char.energy.current}</span> / {char.energy.max}
+                  <div className="text-sm font-bold text-amber-400 mt-0.5">
+                    {char.speed}
                   </div>
                 </div>
               </div>
@@ -144,7 +170,32 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
           )
         })}
 
-        {/* Botão + Criar Novo Personagem */}
+        {/* Personagens Incompatíveis (Bloqueados pela Regra do Sistema) */}
+        {incompatibleCharacters.map((char) => (
+          <div
+            key={char.id}
+            className="relative rounded-3xl border border-white/5 bg-zinc-950/60 p-4 opacity-50 select-none"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-black/80 border border-white/10 flex items-center justify-center text-zinc-600">
+                  <Lock size={20} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-zinc-300">{char.name}</h4>
+                  <span className="text-[11px] text-zinc-500 block">
+                    {char.concept} • Vinculado a {char.systemName}
+                  </span>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full bg-red-950/40 border border-red-900/30 text-red-400 text-[10px] font-bold">
+                Incompatível com {systemNames[currentSystem]}
+              </span>
+            </div>
+          </div>
+        ))}
+
+        {/* Botão + Criar Novo Personagem para o Sistema Atual */}
         <button
           type="button"
           onClick={onCreateNewCharacter}
@@ -154,7 +205,7 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
             <UserPlus size={18} />
           </div>
           <span className="text-sm font-bold uppercase tracking-wider">
-            + Criar Novo Personagem
+            + Criar Novo Personagem em {systemNames[currentSystem]}
           </span>
         </button>
       </div>
@@ -163,10 +214,11 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
       <div className="relative z-10 w-full max-w-md mx-auto space-y-2">
         <button
           type="button"
+          disabled={!chosenId || !compatibleCharacters.some((c) => c.id === chosenId)}
           onClick={handleConfirm}
-          className="w-full py-4 px-6 rounded-full bg-red-600 hover:bg-red-500 text-white font-bold tracking-wider text-sm uppercase shadow-[0_0_25px_rgba(255,0,0,0.7)] hover:shadow-[0_0_35px_rgba(255,0,0,0.95)] active:scale-98 transition-all duration-300 flex items-center justify-center space-x-2"
+          className="w-full py-4 px-6 rounded-full bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold tracking-wider text-sm uppercase shadow-[0_0_25px_rgba(255,0,0,0.7)] hover:shadow-[0_0_35px_rgba(255,0,0,0.95)] active:scale-98 transition-all duration-300 flex items-center justify-center space-x-2"
         >
-          <span>Entrar com Salazar</span>
+          <span>Acessar Ficha do Personagem</span>
           <ArrowRight size={18} />
         </button>
 
@@ -176,7 +228,7 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
           className="w-full text-center text-xs text-zinc-500 hover:text-zinc-300 py-1 transition-colors flex items-center justify-center space-x-1"
         >
           <ChevronLeft size={14} />
-          <span>Trocar Sistema</span>
+          <span>Alterar Sistema Selecionado</span>
         </button>
       </div>
     </div>

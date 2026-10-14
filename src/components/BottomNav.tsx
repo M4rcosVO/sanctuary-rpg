@@ -1,7 +1,7 @@
 import type React from 'react'
-import { Home, LayoutGrid, Calendar, FileText, Plus } from 'lucide-react'
+import { Home, Crosshair, Briefcase, Activity, Plus } from 'lucide-react'
 
-export type NavTab = 'home' | 'arsenal' | 'calendar' | 'documents'
+export type NavTab = 'home' | 'arsenal' | 'inventory' | 'tactical'
 
 interface BottomNavProps {
   currentTab: NavTab
@@ -15,10 +15,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onDiceRollClick,
 }) => {
   const navItems = [
-    { id: 'home' as NavTab, label: 'Home', icon: Home },
-    { id: 'arsenal' as NavTab, label: 'Arsenal', icon: LayoutGrid },
-    { id: 'calendar' as NavTab, label: 'Calendário', icon: Calendar },
-    { id: 'documents' as NavTab, label: 'Documentos', icon: FileText },
+    { id: 'home' as NavTab, label: 'Ficha', icon: Home },
+    { id: 'arsenal' as NavTab, label: 'Arsenal', icon: Crosshair },
+    { id: 'inventory' as NavTab, label: 'Inventário', icon: Briefcase },
+    { id: 'tactical' as NavTab, label: 'Tático', icon: Activity },
   ]
 
   const firstHalf = navItems.slice(0, 2)
@@ -30,7 +30,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         aria-label="Navegação Principal"
         className="pointer-events-auto relative flex items-center justify-between w-full max-w-md bg-[#1a181d]/95 backdrop-blur-xl border border-white/10 rounded-3xl px-3 py-2 shadow-2xl shadow-black/80"
       >
-        {/* Lado Esquerdo */}
+        {/* Lado Esquerdo: Ficha & Arsenal */}
         <div className="flex items-center space-x-2 sm:space-x-4">
           {firstHalf.map((item) => {
             const Icon = item.icon
@@ -79,7 +79,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             aria-label="Rolar Dados / Ação Rápida"
             title="Rolar Dados (D20, D6...)"
           >
-            {/* Anel pulsante decorativo sutil */}
             <span className="absolute inset-0 rounded-full bg-red-500/30 animate-ping opacity-50 group-hover:opacity-75 pointer-events-none" />
             <Plus
               size={28}
@@ -92,7 +91,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           </span>
         </div>
 
-        {/* Lado Direito */}
+        {/* Lado Direito: Inventário & Tático */}
         <div className="flex items-center space-x-2 sm:space-x-4">
           {secondHalf.map((item) => {
             const Icon = item.icon

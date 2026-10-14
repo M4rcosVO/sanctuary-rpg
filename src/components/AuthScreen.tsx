@@ -1,5 +1,5 @@
 import { useState, type FC, type FormEvent } from 'react'
-import { Sparkles, ArrowRight, UserPlus, LogIn, Lock, User, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, UserPlus, LogIn, Lock, User, AlertCircle, CheckCircle2, ShieldCheck } from 'lucide-react'
 
 interface AuthScreenProps {
   onLoginSuccess: (userIdentifier: string) => void
@@ -12,18 +12,27 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [offlineAccountNotice, setOfflineAccountNotice] = useState(false)
 
+  // Credenciais Oficiais Fixas exigidas
+  const REQUIRED_LOGIN = 'CapMarcola'
+  const REQUIRED_PASS = 'Gellak@2520'
+
   const handleLoginSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (!identifier.trim()) {
-      setErrorMsg('Informe seu username ou e-mail.')
+    const trimmedUser = identifier.trim()
+    const trimmedPass = password.trim()
+
+    if (!trimmedUser || !trimmedPass) {
+      setErrorMsg('Preencha o login e a senha para acessar.')
       return
     }
-    if (!password || password.length < 4) {
-      setErrorMsg('A senha deve conter no mínimo 4 caracteres.')
+
+    if (trimmedUser !== REQUIRED_LOGIN || trimmedPass !== REQUIRED_PASS) {
+      setErrorMsg('Credenciais inválidas. Verifique o usuário e a senha de acesso.')
       return
     }
+
     setErrorMsg(null)
-    onLoginSuccess(identifier.trim())
+    onLoginSuccess(trimmedUser)
   }
 
   const handleCreateOfflineAccount = (e: FormEvent) => {
@@ -50,21 +59,20 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
         }}
       />
 
-      {/* Partículas / Efeito de névoa carmesim */}
+      {/* Névoa carmesim de fundo */}
       <div className="pointer-events-none absolute top-1/4 -left-20 w-72 h-72 rounded-full bg-red-900/15 blur-3xl" />
       <div className="pointer-events-none absolute bottom-1/3 -right-20 w-80 h-80 rounded-full bg-red-700/10 blur-3xl" />
 
-      {/* Topo / Marca decorativa limpa */}
-      <div className="relative z-10 flex items-center space-x-2 text-zinc-400 text-xs tracking-[0.25em] uppercase pt-2">
-        <Sparkles size={12} className="text-red-500 animate-pulse" />
-        <span>Guardião de Fichas & Crônicas</span>
-        <Sparkles size={12} className="text-red-500 animate-pulse" />
+      {/* Topo decorativo */}
+      <div className="relative z-10 flex items-center space-x-2 text-zinc-500 text-xs tracking-[0.25em] uppercase pt-2">
+        <ShieldCheck size={14} className="text-red-500" />
+        <span>Acesso Restrito ao Reino</span>
       </div>
 
-      {/* Centro: Logotipo do Elmo & Título Santuário */}
+      {/* Centro: Logotipo do Elmo, Título Santuário e Subtítulo abaixo */}
       <div className="relative z-10 flex flex-col items-center text-center my-auto max-w-sm w-full">
         <div
-          className="relative mb-6 group cursor-pointer"
+          className="relative mb-5 group cursor-pointer"
           onClick={() => {
             if (view === 'welcome') setView('login')
           }}
@@ -79,6 +87,7 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
           />
         </div>
 
+        {/* Título Principal */}
         <h1
           className="text-4xl sm:text-5xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-400"
           style={{ fontFamily: "'Cinzel', serif, system-ui" }}
@@ -86,10 +95,14 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
           SANTUÁRIO
         </h1>
 
+        {/* Subtítulo posicionado exatamente abaixo do título */}
+        <p className="mt-2 text-sm text-zinc-400 font-medium tracking-widest uppercase">
+          Guardião de fichas e crônicas
+        </p>
+
         {/* View 1: Botões Iniciais (Acessar / Cadastrar) */}
         {view === 'welcome' && (
           <div className="w-full mt-10 space-y-4">
-            {/* Botão Acessar -> Abre formulário real de login */}
             <button
               type="button"
               onClick={() => {
@@ -102,7 +115,6 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
               <span>Acessar</span>
             </button>
 
-            {/* Botão Cadastrar */}
             <button
               type="button"
               onClick={() => {
@@ -117,17 +129,17 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
           </div>
         )}
 
-        {/* View 2: Formulário Real de Login */}
+        {/* View 2: Formulário Real com Login Fixo */}
         {view === 'login' && (
           <form
             onSubmit={handleLoginSubmit}
-            className="w-full mt-8 space-y-3.5 bg-black/75 backdrop-blur-md p-6 rounded-3xl border border-red-900/40 shadow-2xl text-left"
+            className="w-full mt-8 space-y-3.5 bg-black/80 backdrop-blur-md p-6 rounded-3xl border border-red-900/40 shadow-2xl text-left"
           >
-            <div className="text-center mb-4">
+            <div className="text-center mb-3">
               <h2 className="text-lg font-bold text-white tracking-wide" style={{ fontFamily: "'Cinzel', serif" }}>
-                Entrar no Santuário
+                Autenticação de Acesso
               </h2>
-              <p className="text-xs text-zinc-400">Insira suas credenciais de aventureiro</p>
+              <p className="text-xs text-zinc-400">Insira as credenciais do Santuário</p>
             </div>
 
             {errorMsg && (
@@ -139,14 +151,14 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
 
             <div>
               <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1 ml-1">
-                Username ou E-mail
+                Login / Usuário
               </label>
               <div className="relative">
                 <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
                 <input
                   type="text"
                   autoFocus
-                  placeholder="salazar ou seu@email.com"
+                  placeholder="Digite seu usuário"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full bg-[#120f14] border border-white/10 rounded-full pl-11 pr-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
@@ -174,7 +186,7 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
               type="submit"
               className="w-full mt-3 py-3.5 px-6 rounded-full bg-red-600 hover:bg-red-500 text-white font-bold tracking-wider text-sm uppercase shadow-[0_0_25px_rgba(255,0,0,0.7)] hover:shadow-[0_0_35px_rgba(255,0,0,0.9)] active:scale-98 transition-all duration-300 flex items-center justify-center space-x-2"
             >
-              <span>Confirmar e Entrar</span>
+              <span>Entrar no Santuário</span>
               <ArrowRight size={16} />
             </button>
 
@@ -191,25 +203,25 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
           </form>
         )}
 
-        {/* View 3: Cadastro / Conta Offline */}
+        {/* View 3: Cadastro Offline */}
         {view === 'register' && (
           <form
             onSubmit={handleCreateOfflineAccount}
-            className="w-full mt-8 space-y-4 bg-black/75 backdrop-blur-md p-6 rounded-3xl border border-red-900/40 shadow-2xl text-left"
+            className="w-full mt-8 space-y-4 bg-black/80 backdrop-blur-md p-6 rounded-3xl border border-red-900/40 shadow-2xl text-left"
           >
             <div className="text-center mb-3">
               <h2 className="text-lg font-bold text-white tracking-wide" style={{ fontFamily: "'Cinzel', serif" }}>
                 Conta Local Offline
               </h2>
               <div className="p-2.5 rounded-2xl bg-amber-950/40 border border-amber-800/40 text-amber-200/90 text-xs mt-2 text-left">
-                <strong>Aviso:</strong> O cadastro em nuvem está desabilitado temporariamente. Você criará uma conta local segura armazenada no seu dispositivo.
+                <strong>Aviso:</strong> O cadastro em nuvem está desabilitado temporariamente. Você criará uma sessão local segura no dispositivo.
               </div>
             </div>
 
             {offlineAccountNotice && (
               <div className="p-3 rounded-2xl bg-emerald-950/80 border border-emerald-700/60 text-emerald-200 text-xs flex items-center space-x-2">
                 <CheckCircle2 size={16} className="text-emerald-400 flex-shrink-0" />
-                <span>Conta local criada com sucesso! Carregando...</span>
+                <span>Perfil criado! Redirecionando...</span>
               </div>
             )}
 
@@ -222,14 +234,14 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
 
             <div>
               <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1 ml-1">
-                Nome do Jogador / Aventureiro
+                Nome do Jogador
               </label>
               <div className="relative">
                 <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
                 <input
                   type="text"
                   autoFocus
-                  placeholder="Ex: Salazar ou Marcos"
+                  placeholder="Nome do Jogador"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full bg-[#120f14] border border-white/10 rounded-full pl-11 pr-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
@@ -243,7 +255,7 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
               className="w-full mt-2 py-3.5 px-6 rounded-full bg-[#3d0b11] hover:bg-[#520f17] border border-red-800/60 text-red-200 hover:text-white font-bold tracking-wider text-sm uppercase shadow-[0_0_20px_rgba(180,0,0,0.5)] active:scale-98 transition-all duration-300 flex items-center justify-center space-x-2"
             >
               <UserPlus size={16} />
-              <span>Criar Perfil Offline</span>
+              <span>Criar Sessão Local</span>
             </button>
 
             <button
