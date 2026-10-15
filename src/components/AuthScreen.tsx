@@ -124,7 +124,7 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
               className="w-full py-4 px-8 rounded-full bg-[#3d0b11] hover:bg-[#520f17] border border-red-800/60 text-red-200 font-bold tracking-wider text-sm uppercase shadow-[0_0_20px_rgba(180,0,0,0.5)] hover:shadow-[0_0_28px_rgba(200,0,0,0.7)] active:scale-98 transition-all duration-300 flex items-center justify-center space-x-2 group"
             >
               <UserPlus size={18} className="text-red-400 group-hover:scale-110 transition-transform" />
-              <span>Cadastrar</span>
+              <span>Cadastrar - Inativo</span>
             </button>
           </div>
         )}
