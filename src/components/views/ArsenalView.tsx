@@ -243,14 +243,15 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
     }
   }
 
-  // Calcular quais cards exibir no carrossel (visível: até 3-4 cards em volta do offset)
+  // Retorna os cards duplicados caso a lista seja curta, garantindo o loop sem espaços vazios
   const getVisibleCards = () => {
     if (weapons.length === 0) return []
     const visible = []
-    const count = Math.min(weapons.length, 8) // máximo 8 cards visíveis
-    for (let i = 0; i < count; i++) {
-      const idx = (carouselOffset + i) % weapons.length
-      visible.push({ weapon: weapons[idx], idx })
+    // Se tiver poucas armas, repetimos a lista para preencher a tela continuamente
+    const iterations = weapons.length < 6 ? 3 : 2
+    for (let i = 0; i < weapons.length * iterations; i++) {
+      const idx = i % weapons.length
+      visible.push({ weapon: weapons[idx], idx, uniqueKey: `${weapons[idx].id}-${i}` })
     }
     return visible
   }
@@ -276,11 +277,10 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
             <button
               type="button"
               onClick={() => setViewMode('showroom')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-                viewMode === 'showroom'
-                  ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(255,0,0,0.7)]'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${viewMode === 'showroom'
+                ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(255,0,0,0.7)]'
+                : 'text-zinc-400 hover:text-white'
+                }`}
             >
               <Eye size={13} />
               <span className="hidden sm:inline">Mostruário</span>
@@ -288,11 +288,10 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
             <button
               type="button"
               onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-                viewMode === 'table'
-                  ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(255,0,0,0.7)]'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${viewMode === 'table'
+                ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(255,0,0,0.7)]'
+                : 'text-zinc-400 hover:text-white'
+                }`}
             >
               <List size={13} />
               <span className="hidden sm:inline">Consulta</span>
@@ -342,22 +341,21 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
             </div>
 
             {/* Faixa deslizável de cards */}
-            <div className="overflow-hidden">
+            <div className="overflow-hidden w-full">
               <div
-                className="flex gap-2.5 transition-transform duration-700 ease-in-out"
-                style={{ transform: 'translateX(0)' }}
+                className="flex gap-2.5 transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)"
+                style={{ transform: `translateX(-${carouselOffset * 190}px)` }}
               >
-                {getVisibleCards().map(({ weapon: w, idx }) => {
+                {getVisibleCards().map(({ weapon: w, idx, uniqueKey }) => {
                   const isSelected = idx === selectedWeaponIndex
                   return (
                     <div
-                      key={`${w.id}-${idx}`}
+                      key={uniqueKey}
                       onClick={() => handleSelectWeapon(idx)}
-                      className={`flex-shrink-0 p-3 rounded-2xl border transition-all cursor-pointer flex items-center space-x-2.5 ${
-                        isSelected
-                          ? 'bg-red-950/70 border-red-500 shadow-[0_0_15px_rgba(255,0,0,0.4)]'
-                          : 'bg-black/60 border-white/10 hover:border-red-900/40 opacity-70 hover:opacity-100'
-                      }`}
+                      className={`w-[180px] flex-shrink-0 p-3 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center space-x-2.5 ${isSelected
+                        ? 'bg-red-950/70 border-red-500 shadow-[0_0_15px_rgba(255,0,0,0.4)]'
+                        : 'bg-black/60 border-white/10 hover:border-red-900/40 opacity-70 hover:opacity-100'
+                        }`}
                     >
                       {/* Thumbnail de imagem ou ícone */}
                       <div className="w-10 h-10 rounded-xl bg-black border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -387,11 +385,10 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
                     key={idx}
                     type="button"
                     onClick={() => handleSelectWeapon(idx)}
-                    className={`rounded-full transition-all ${
-                      idx === selectedWeaponIndex
-                        ? 'w-4 h-1.5 bg-red-500'
-                        : 'w-1.5 h-1.5 bg-zinc-700 hover:bg-zinc-500'
-                    }`}
+                    className={`rounded-full transition-all ${idx === selectedWeaponIndex
+                      ? 'w-4 h-1.5 bg-red-500'
+                      : 'w-1.5 h-1.5 bg-zinc-700 hover:bg-zinc-500'
+                      }`}
                   />
                 ))}
               </div>
@@ -752,11 +749,10 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
                       key={opt.value}
                       type="button"
                       onClick={() => setFormData((p) => ({ ...p, iconType: opt.value }))}
-                      className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
-                        formData.iconType === opt.value
-                          ? 'bg-red-600 border-red-500 text-white'
-                          : 'bg-zinc-900 border-white/10 text-zinc-400 hover:border-white/30'
-                      }`}
+                      className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${formData.iconType === opt.value
+                        ? 'bg-red-600 border-red-500 text-white'
+                        : 'bg-zinc-900 border-white/10 text-zinc-400 hover:border-white/30'
+                        }`}
                     >
                       {opt.label}
                     </button>
