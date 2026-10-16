@@ -26,8 +26,8 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
   // Seleciona inicialmente um compatível se disponível
   const [chosenId, setChosenId] = useState<string>(
     compatibleCharacters.find((c) => c.id === selectedCharacterId)?.id ||
-      compatibleCharacters[0]?.id ||
-      ''
+    compatibleCharacters[0]?.id ||
+    ''
   )
 
   const handleConfirm = () => {
@@ -82,11 +82,10 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
             <div
               key={char.id}
               onClick={() => setChosenId(char.id)}
-              className={`relative rounded-3xl border p-5 cursor-pointer transition-all duration-200 overflow-hidden ${
-                isSelected
+              className={`relative rounded-3xl border p-5 cursor-pointer transition-all duration-200 overflow-hidden ${isSelected
                   ? 'bg-gradient-to-br from-[#1e1724] via-[#141217] to-black border-red-600 shadow-[0_0_25px_rgba(255,0,0,0.4)] scale-[1.01]'
                   : 'bg-[#131116]/80 hover:bg-[#1a171e] border-white/10 hover:border-red-900/50'
-              }`}
+                }`}
             >
               {isSelected && (
                 <div className="pointer-events-none absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-red-600/20 blur-2xl" />
@@ -124,11 +123,10 @@ export const CharacterSelectView: FC<CharacterSelectViewProps> = ({
                 </div>
 
                 <div
-                  className={`w-6 h-6 rounded-full border flex items-center justify-center flex-shrink-0 transition-all ${
-                    isSelected
+                  className={`w-6 h-6 rounded-full border flex items-center justify-center flex-shrink-0 transition-all ${isSelected
                       ? 'border-red-500 bg-red-600 text-white shadow-[0_0_8px_rgba(255,0,0,0.6)]'
                       : 'border-zinc-700 bg-black/40 text-transparent'
-                  }`}
+                    }`}
                 >
                   <Check size={14} strokeWidth={3} />
                 </div>

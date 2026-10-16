@@ -111,20 +111,18 @@ export const TacticalView: FC<TacticalViewProps> = ({
         {/* Inspiração Heroica */}
         <div
           onClick={toggleInspiration}
-          className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between ${
-            tacticalState.inspiration
-              ? 'bg-gradient-to-br from-amber-950/60 to-black border-amber-500/70 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
-              : 'bg-[#141217] border-white/10 hover:border-white/20'
-          }`}
+          className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between ${tacticalState.inspiration
+            ? 'bg-gradient-to-br from-amber-950/60 to-black border-amber-500/70 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
+            : 'bg-[#141217] border-white/10 hover:border-white/20'
+            }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] uppercase font-bold text-zinc-400">D&D 5e</span>
             <div
-              className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                tacticalState.inspiration
-                  ? 'border-amber-400 bg-amber-500 text-black shadow-[0_0_8px_rgba(245,158,11,0.9)]'
-                  : 'border-zinc-600 bg-black'
-              }`}
+              className={`w-4 h-4 rounded-full border flex items-center justify-center ${tacticalState.inspiration
+                ? 'border-amber-400 bg-amber-500 text-black shadow-[0_0_8px_rgba(245,158,11,0.9)]'
+                : 'border-zinc-600 bg-black'
+                }`}
             >
               {tacticalState.inspiration && <CheckCircle2 size={12} strokeWidth={3} />}
             </div>
@@ -132,9 +130,8 @@ export const TacticalView: FC<TacticalViewProps> = ({
 
           <div className="my-2">
             <h4
-              className={`text-base font-black ${
-                tacticalState.inspiration ? 'text-amber-300' : 'text-white'
-              }`}
+              className={`text-base font-black ${tacticalState.inspiration ? 'text-amber-300' : 'text-white'
+                }`}
               style={{ fontFamily: "'Cinzel', serif" }}
             >
               Inspiração
@@ -145,9 +142,8 @@ export const TacticalView: FC<TacticalViewProps> = ({
           </div>
 
           <span
-            className={`text-[10px] font-bold uppercase tracking-wider ${
-              tacticalState.inspiration ? 'text-amber-400' : 'text-zinc-500'
-            }`}
+            className={`text-[10px] font-bold uppercase tracking-wider ${tacticalState.inspiration ? 'text-amber-400' : 'text-zinc-500'
+              }`}
           >
             {tacticalState.inspiration ? '✦ ATIVA' : 'INATIVA'}
           </span>
@@ -170,11 +166,10 @@ export const TacticalView: FC<TacticalViewProps> = ({
               {Array.from({ length: tacticalState.gadgetSlots.max }).map((_, i) => (
                 <div
                   key={i}
-                  className={`h-2.5 flex-1 rounded-full transition-all ${
-                    i < tacticalState.gadgetSlots.current
-                      ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
-                      : 'bg-zinc-800'
-                  }`}
+                  className={`h-2.5 flex-1 rounded-full transition-all ${i < tacticalState.gadgetSlots.current
+                    ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
+                    : 'bg-zinc-800'
+                    }`}
                 />
               ))}
             </div>
@@ -198,6 +193,99 @@ export const TacticalView: FC<TacticalViewProps> = ({
               <Plus size={14} />
             </button>
           </div>
+        </div>
+      </div>
+
+
+      {/* Munição e Disparos de Armas (Slots Rápidos) */}
+      <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 flex flex-col justify-between">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
+            <Wrench size={10} className="text-red-400" />
+            <span>A Lista Carmesim</span>
+          </span>
+          <span className="text-xs font-mono font-bold text-red-400">
+            {tacticalState.gadgetSlots.current}/{tacticalState.gadgetSlots.max}
+          </span>
+        </div>
+
+        <div className="my-2">
+          <div className="flex space-x-1.5 my-1">
+            {Array.from({ length: tacticalState.gadgetSlots.max }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-2.5 flex-1 rounded-full transition-all ${i < tacticalState.gadgetSlots.current
+                  ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
+                  : 'bg-zinc-800'
+                  }`}
+              />
+            ))}
+          </div>
+          <p className="text-[11px] text-zinc-400">Munição e Disparos de Arma</p>
+        </div>
+
+        <div className="flex items-center justify-between pt-1">
+          <button
+            type="button"
+            onClick={() => updateGadgetSlots(-1)}
+            className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+          >
+            <Minus size={14} />
+          </button>
+          <span className="text-xs font-bold text-white">Gastar / Recuperar</span>
+          <button
+            type="button"
+            onClick={() => updateGadgetSlots(1)}
+            className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+          >
+            <Plus size={14} />
+          </button>
+        </div>
+      </div>
+
+      {/* Munição e Disparos de Armas (Slots Rápidos) */}
+      <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 flex flex-col justify-between">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
+            <Wrench size={10} className="text-red-400" />
+            <span>Má Notícia</span>
+          </span>
+          <span className="text-xs font-mono font-bold text-red-400">
+            {tacticalState.gadgetSlots.current}/{tacticalState.gadgetSlots.max}
+          </span>
+        </div>
+
+        <div className="my-2">
+          <div className="flex space-x-1.5 my-1">
+            {Array.from({ length: tacticalState.gadgetSlots.max }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-2.5 flex-1 rounded-full transition-all ${i < tacticalState.gadgetSlots.current
+                  ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
+                  : 'bg-zinc-800'
+                  }`}
+              />
+            ))}
+          </div>
+          <p className="text-[11px] text-zinc-400">Munição e Disparos de Arma</p>
+        </div>
+
+        <div className="flex items-center justify-between pt-1">
+          <button
+            type="button"
+            onClick={() => updateGadgetSlots(-1)}
+            className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+          >
+            <Minus size={14} />
+          </button>
+          <span className="text-xs font-bold text-white">Gastar / Recuperar</span>
+          <button
+            type="button"
+            onClick={() => updateGadgetSlots(1)}
+            className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+          >
+            <Plus size={14} />
+          </button>
         </div>
       </div>
 
@@ -258,17 +346,15 @@ export const TacticalView: FC<TacticalViewProps> = ({
               <div
                 key={cond.id}
                 onClick={() => toggleCondition(cond.id)}
-                className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-start justify-between ${
-                  isActive
-                    ? 'bg-red-950/60 border-red-600/80 shadow-[0_0_15px_rgba(255,0,0,0.35)]'
-                    : 'bg-black/40 border-white/5 hover:border-white/20'
-                }`}
+                className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-start justify-between ${isActive
+                  ? 'bg-red-950/60 border-red-600/80 shadow-[0_0_15px_rgba(255,0,0,0.35)]'
+                  : 'bg-black/40 border-white/5 hover:border-white/20'
+                  }`}
               >
                 <div>
                   <span
-                    className={`text-xs font-bold block ${
-                      isActive ? 'text-red-300' : 'text-zinc-300'
-                    }`}
+                    className={`text-xs font-bold block ${isActive ? 'text-red-300' : 'text-zinc-300'
+                      }`}
                   >
                     {cond.name}
                   </span>
@@ -278,11 +364,10 @@ export const TacticalView: FC<TacticalViewProps> = ({
                 </div>
 
                 <div
-                  className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ml-2 mt-0.5 ${
-                    isActive
-                      ? 'border-red-500 bg-red-600 text-white shadow-[0_0_6px_rgba(255,0,0,0.9)]'
-                      : 'border-zinc-700 bg-black'
-                  }`}
+                  className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ml-2 mt-0.5 ${isActive
+                    ? 'border-red-500 bg-red-600 text-white shadow-[0_0_6px_rgba(255,0,0,0.9)]'
+                    : 'border-zinc-700 bg-black'
+                    }`}
                 >
                   {isActive && <CheckCircle2 size={11} strokeWidth={3} />}
                 </div>
@@ -299,7 +384,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
           <span>Status tático sincronizado com a ficha do Santuário</span>
         </p>
       </div>
-    </div>
+    </div >
   )
 }
 
