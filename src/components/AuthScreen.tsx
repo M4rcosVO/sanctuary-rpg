@@ -50,12 +50,12 @@ export const AuthScreen: FC<AuthScreenProps> = ({ onLoginSuccess }) => {
 
   return (
     <div className="relative min-h-screen w-full bg-black text-white flex flex-col justify-between items-center px-6 py-12 overflow-hidden select-none">
-      {/* Gradiente radial em vermelho sangue no rodapé */}
+      {/* Gradiente radial em vermelho sangue no rodapé (Ajustado para dissipar sem cortes) */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[65vh] w-full"
+        className="pointer-events-none absolute inset-0 h-full w-full"
         style={{
           background:
-            'radial-gradient(circle at 50% 100%, rgba(220, 20, 30, 0.45) 0%, rgba(90, 0, 10, 0.3) 35%, rgba(0, 0, 0, 0.95) 75%, #000000 100%)',
+            'radial-gradient(circle at 50% 100%, rgba(220, 20, 30, 0.45) 0%, rgba(90, 0, 10, 0.2) 35%, rgba(0, 0, 0, 0.95) 70%, #000000 100%)',
         }}
       />
 
