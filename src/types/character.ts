@@ -113,6 +113,8 @@ export interface Character {
     gadgetSlots: { current: number; max: number }
     infusionsActive: { current: number; max: number }
     activeConditions: string[]
+    carmesimSlots?: { current: number; max: number }
+    badNewsSlots?: { current: number; max: number }
   }
   // Galeria de imagens do personagem
   profileImageUrl?: string

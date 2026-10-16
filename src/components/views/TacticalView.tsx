@@ -63,6 +63,33 @@ export const TacticalView: FC<TacticalViewProps> = ({
     }))
   }
 
+  const updateCarmesimSlots = (delta: number) => {
+    onUpdateTacticalState((prev) => {
+      // Se a propriedade ainda não existir no objeto global (primeiro uso), começamos com o padrão de 4/4
+      const currentSlots = prev.carmesimSlots || { current: 4, max: 4 }
+      return {
+        ...prev,
+        carmesimSlots: {
+          ...currentSlots,
+          current: Math.min(currentSlots.max, Math.max(0, currentSlots.current + delta)),
+        },
+      }
+    })
+  }
+
+  const updateBadNewsSlots = (delta: number) => {
+    onUpdateTacticalState((prev) => {
+      const currentSlots = prev.badNewsSlots || { current: 4, max: 4 }
+      return {
+        ...prev,
+        badNewsSlots: {
+          ...currentSlots,
+          current: Math.min(currentSlots.max, Math.max(0, currentSlots.current + delta)),
+        },
+      }
+    })
+  }
+
   const updateInfusions = (delta: number) => {
     onUpdateTacticalState((prev) => ({
       ...prev,
@@ -81,6 +108,8 @@ export const TacticalView: FC<TacticalViewProps> = ({
       ...prev,
       gadgetSlots: { ...prev.gadgetSlots, current: prev.gadgetSlots.max },
       infusionsActive: { ...prev.infusionsActive, current: prev.infusionsActive.max },
+      carmesimSlots: { ...(prev.carmesimSlots || { current: 4, max: 4 }), current: (prev.carmesimSlots?.max || 4) },
+      badNewsSlots: { ...(prev.badNewsSlots || { current: 4, max: 4 }), current: (prev.badNewsSlots?.max || 4) },
       activeConditions: [],
     }))
   }
@@ -197,7 +226,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
       </div>
 
 
-      {/* Munição e Disparos de Armas (Slots Rápidos) */}
+      {/* Munição e Disparos de Armas: A Lista Carmesim */}
       <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
@@ -205,16 +234,16 @@ export const TacticalView: FC<TacticalViewProps> = ({
             <span>A Lista Carmesim</span>
           </span>
           <span className="text-xs font-mono font-bold text-red-400">
-            {tacticalState.gadgetSlots.current}/{tacticalState.gadgetSlots.max}
+            {(tacticalState.carmesimSlots?.current ?? 4)}/{(tacticalState.carmesimSlots?.max ?? 4)}
           </span>
         </div>
 
         <div className="my-2">
           <div className="flex space-x-1.5 my-1">
-            {Array.from({ length: tacticalState.gadgetSlots.max }).map((_, i) => (
+            {Array.from({ length: (tacticalState.carmesimSlots?.max ?? 4) }).map((_, i) => (
               <div
                 key={i}
-                className={`h-2.5 flex-1 rounded-full transition-all ${i < tacticalState.gadgetSlots.current
+                className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.carmesimSlots?.current ?? 4)
                   ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
                   : 'bg-zinc-800'
                   }`}
@@ -227,7 +256,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
         <div className="flex items-center justify-between pt-1">
           <button
             type="button"
-            onClick={() => updateGadgetSlots(-1)}
+            onClick={() => updateCarmesimSlots(-1)}
             className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
           >
             <Minus size={14} />
@@ -235,7 +264,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
           <span className="text-xs font-bold text-white">Gastar / Recuperar</span>
           <button
             type="button"
-            onClick={() => updateGadgetSlots(1)}
+            onClick={() => updateCarmesimSlots(1)}
             className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
           >
             <Plus size={14} />
@@ -243,7 +272,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
         </div>
       </div>
 
-      {/* Munição e Disparos de Armas (Slots Rápidos) */}
+      {/* Munição e Disparos de Armas: Má Notícia */}
       <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
@@ -251,16 +280,16 @@ export const TacticalView: FC<TacticalViewProps> = ({
             <span>Má Notícia</span>
           </span>
           <span className="text-xs font-mono font-bold text-red-400">
-            {tacticalState.gadgetSlots.current}/{tacticalState.gadgetSlots.max}
+            {(tacticalState.badNewsSlots?.current ?? 4)}/{(tacticalState.badNewsSlots?.max ?? 4)}
           </span>
         </div>
 
         <div className="my-2">
           <div className="flex space-x-1.5 my-1">
-            {Array.from({ length: tacticalState.gadgetSlots.max }).map((_, i) => (
+            {Array.from({ length: (tacticalState.badNewsSlots?.max ?? 4) }).map((_, i) => (
               <div
                 key={i}
-                className={`h-2.5 flex-1 rounded-full transition-all ${i < tacticalState.gadgetSlots.current
+                className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.badNewsSlots?.current ?? 4)
                   ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
                   : 'bg-zinc-800'
                   }`}
@@ -273,7 +302,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
         <div className="flex items-center justify-between pt-1">
           <button
             type="button"
-            onClick={() => updateGadgetSlots(-1)}
+            onClick={() => updateBadNewsSlots(-1)}
             className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
           >
             <Minus size={14} />
@@ -281,7 +310,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
           <span className="text-xs font-bold text-white">Gastar / Recuperar</span>
           <button
             type="button"
-            onClick={() => updateGadgetSlots(1)}
+            onClick={() => updateBadNewsSlots(1)}
             className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
           >
             <Plus size={14} />
