@@ -116,6 +116,8 @@ export const ImageGallery: FC<ImageGalleryProps> = ({
               <img
                 src={profileImageUrl}
                 alt={label}
+                fetchPriority="high"
+                loading="eager"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
@@ -211,15 +213,15 @@ export const ImageGallery: FC<ImageGalleryProps> = ({
                     return (
                       <div
                         key={idx}
-                        className={`relative group rounded-2xl overflow-hidden aspect-square border-2 transition-all ${
-                          isProfile
-                            ? 'border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
-                            : 'border-white/10 hover:border-white/30'
-                        }`}
+                        className={`relative group rounded-2xl overflow-hidden aspect-square border-2 transition-all ${isProfile
+                          ? 'border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                          : 'border-white/10 hover:border-white/30'
+                          }`}
                       >
                         <img
                           src={url}
                           alt={`${label} ${idx + 1}`}
+                          loading="eager"
                           className="w-full h-full object-cover cursor-pointer"
                           onClick={() => openLightbox(idx)}
                         />
@@ -237,11 +239,10 @@ export const ImageGallery: FC<ImageGalleryProps> = ({
                           <button
                             type="button"
                             onClick={() => handleSetAsProfile(url)}
-                            className={`opacity-0 group-hover:opacity-100 p-1.5 rounded-xl transition-all ${
-                              isProfile
-                                ? 'bg-amber-500/30 text-amber-400'
-                                : 'bg-white/20 hover:bg-amber-500/30 text-white hover:text-amber-400'
-                            }`}
+                            className={`opacity-0 group-hover:opacity-100 p-1.5 rounded-xl transition-all ${isProfile
+                              ? 'bg-amber-500/30 text-amber-400'
+                              : 'bg-white/20 hover:bg-amber-500/30 text-white hover:text-amber-400'
+                              }`}
                             title={isProfile ? 'Imagem de perfil atual' : 'Definir como perfil'}
                           >
                             {isProfile ? <Star size={14} /> : <StarOff size={14} />}
@@ -283,9 +284,9 @@ export const ImageGallery: FC<ImageGalleryProps> = ({
           <img
             src={allImages[lightboxIndex]}
             alt={`${label} ampliado`}
+            loading="eager"
+            fetchPriority="high"
             className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl select-none"
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxHeight: 'calc(100vh - 120px)' }}
           />
 
           {/* Botão Fechar */}
@@ -325,11 +326,10 @@ export const ImageGallery: FC<ImageGalleryProps> = ({
             <button
               type="button"
               onClick={() => handleSetAsProfile(allImages[lightboxIndex!])}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
-                allImages[lightboxIndex!] === profileImageUrl
-                  ? 'bg-amber-500 text-black'
-                  : 'bg-zinc-800 hover:bg-amber-500/20 text-zinc-300 hover:text-amber-400 border border-white/10'
-              }`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${allImages[lightboxIndex!] === profileImageUrl
+                ? 'bg-amber-500 text-black'
+                : 'bg-zinc-800 hover:bg-amber-500/20 text-zinc-300 hover:text-amber-400 border border-white/10'
+                }`}
             >
               <Star size={12} />
               {allImages[lightboxIndex!] === profileImageUrl ? 'Imagem de Perfil' : 'Definir como Perfil'}
