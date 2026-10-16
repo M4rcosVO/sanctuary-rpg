@@ -115,6 +115,7 @@ export interface Character {
     activeConditions: string[]
     carmesimSlots?: { current: number; max: number }
     badNewsSlots?: { current: number; max: number }
+    badNewsSpecialSlots?: { current: number; max: number }
   }
   // Galeria de imagens do personagem
   profileImageUrl?: string

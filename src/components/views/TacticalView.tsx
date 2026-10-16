@@ -65,8 +65,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
 
   const updateCarmesimSlots = (delta: number) => {
     onUpdateTacticalState((prev) => {
-      // Se a propriedade ainda não existir no objeto global (primeiro uso), começamos com o padrão de 4/4
-      const currentSlots = prev.carmesimSlots || { current: 4, max: 4 }
+      const currentSlots = prev.carmesimSlots || { current: 6, max: 6 }
       return {
         ...prev,
         carmesimSlots: {
@@ -79,10 +78,23 @@ export const TacticalView: FC<TacticalViewProps> = ({
 
   const updateBadNewsSlots = (delta: number) => {
     onUpdateTacticalState((prev) => {
-      const currentSlots = prev.badNewsSlots || { current: 4, max: 4 }
+      const currentSlots = prev.badNewsSlots || { current: 1, max: 1 }
       return {
         ...prev,
         badNewsSlots: {
+          ...currentSlots,
+          current: Math.min(currentSlots.max, Math.max(0, currentSlots.current + delta)),
+        },
+      }
+    })
+  }
+
+  const updateBadNewsSpecialSlots = (delta: number) => {
+    onUpdateTacticalState((prev) => {
+      const currentSlots = prev.badNewsSpecialSlots || { current: 1, max: 1 }
+      return {
+        ...prev,
+        badNewsSpecialSlots: {
           ...currentSlots,
           current: Math.min(currentSlots.max, Math.max(0, currentSlots.current + delta)),
         },
@@ -108,8 +120,9 @@ export const TacticalView: FC<TacticalViewProps> = ({
       ...prev,
       gadgetSlots: { ...prev.gadgetSlots, current: prev.gadgetSlots.max },
       infusionsActive: { ...prev.infusionsActive, current: prev.infusionsActive.max },
-      carmesimSlots: { ...(prev.carmesimSlots || { current: 4, max: 4 }), current: (prev.carmesimSlots?.max || 4) },
-      badNewsSlots: { ...(prev.badNewsSlots || { current: 4, max: 4 }), current: (prev.badNewsSlots?.max || 4) },
+      carmesimSlots: { current: 6, max: 6 },
+      badNewsSlots: { current: 1, max: 1 },
+      badNewsSpecialSlots: { current: 1, max: 1 },
       activeConditions: [],
     }))
   }
@@ -226,7 +239,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
       </div>
 
 
-      {/* Munição e Disparos de Armas: A Lista Carmesim */}
+      {/* Munição e Disparos de Armas: A Lista Carmesim (6 Disparos) */}
       <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
@@ -234,16 +247,16 @@ export const TacticalView: FC<TacticalViewProps> = ({
             <span>A Lista Carmesim</span>
           </span>
           <span className="text-xs font-mono font-bold text-red-400">
-            {(tacticalState.carmesimSlots?.current ?? 4)}/{(tacticalState.carmesimSlots?.max ?? 4)}
+            {(tacticalState.carmesimSlots?.current ?? 6)}/{(tacticalState.carmesimSlots?.max ?? 6)}
           </span>
         </div>
 
         <div className="my-2">
-          <div className="flex space-x-1.5 my-1">
-            {Array.from({ length: (tacticalState.carmesimSlots?.max ?? 4) }).map((_, i) => (
+          <div className="flex space-x-1 my-1">
+            {Array.from({ length: (tacticalState.carmesimSlots?.max ?? 6) }).map((_, i) => (
               <div
                 key={i}
-                className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.carmesimSlots?.current ?? 4)
+                className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.carmesimSlots?.current ?? 6)
                   ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
                   : 'bg-zinc-800'
                   }`}
@@ -272,50 +285,101 @@ export const TacticalView: FC<TacticalViewProps> = ({
         </div>
       </div>
 
-      {/* Munição e Disparos de Armas: Má Notícia */}
-      <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
-            <Wrench size={10} className="text-red-400" />
-            <span>Má Notícia</span>
-          </span>
-          <span className="text-xs font-mono font-bold text-red-400">
-            {(tacticalState.badNewsSlots?.current ?? 4)}/{(tacticalState.badNewsSlots?.max ?? 4)}
-          </span>
-        </div>
+      {/* Munição e Disparos de Armas: Má Notícia (Tiro Normal + Tiro Único Dourado) */}
+      <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 space-y-4">
 
-        <div className="my-2">
-          <div className="flex space-x-1.5 my-1">
-            {Array.from({ length: (tacticalState.badNewsSlots?.max ?? 4) }).map((_, i) => (
-              <div
-                key={i}
-                className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.badNewsSlots?.current ?? 4)
-                  ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
-                  : 'bg-zinc-800'
-                  }`}
-              />
-            ))}
+        {/* Sub-Contador 1: Disparo Normal */}
+        <div className="flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
+              <Wrench size={10} className="text-red-400" />
+              <span>Má Notícia - Disparo Normal</span>
+            </span>
+            <span className="text-xs font-mono font-bold text-red-400">
+              {(tacticalState.badNewsSlots?.current ?? 1)}/{(tacticalState.badNewsSlots?.max ?? 1)}
+            </span>
           </div>
-          <p className="text-[11px] text-zinc-400">Munição e Disparos de Arma</p>
+
+          <div className="my-2">
+            <div className="flex space-x-1.5 my-1">
+              {Array.from({ length: (tacticalState.badNewsSlots?.max ?? 1) }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.badNewsSlots?.current ?? 1)
+                    ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
+                    : 'bg-zinc-800'
+                    }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <button
+              type="button"
+              onClick={() => updateBadNewsSlots(-1)}
+              className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+            >
+              <Minus size={14} />
+            </button>
+            <span className="text-xs font-semibold text-zinc-500">Tiro Normal</span>
+            <button
+              type="button"
+              onClick={() => updateBadNewsSlots(1)}
+              className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center justify-between pt-1">
-          <button
-            type="button"
-            onClick={() => updateBadNewsSlots(-1)}
-            className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-          >
-            <Minus size={14} />
-          </button>
-          <span className="text-xs font-bold text-white">Gastar / Recuperar</span>
-          <button
-            type="button"
-            onClick={() => updateBadNewsSlots(1)}
-            className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-          >
-            <Plus size={14} />
-          </button>
+        <div className="border-t border-white/5 my-2" />
+
+        {/* Sub-Contador 2: Habilidade Tiro Único (Dourado) */}
+        <div className="flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-amber-400 flex items-center space-x-1">
+              <Sparkles size={10} className="text-amber-400" />
+              <span>Má Notícia - Habilidade de Tiro Único</span>
+            </span>
+            <span className="text-xs font-mono font-bold text-amber-400">
+              {(tacticalState.badNewsSpecialSlots?.current ?? 1)}/{(tacticalState.badNewsSpecialSlots?.max ?? 1)}
+            </span>
+          </div>
+
+          <div className="my-2">
+            <div className="flex space-x-1.5 my-1">
+              {Array.from({ length: (tacticalState.badNewsSpecialSlots?.max ?? 1) }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.badNewsSpecialSlots?.current ?? 1)
+                    ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.8)] border border-amber-400/40'
+                    : 'bg-zinc-800'
+                    }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <button
+              type="button"
+              onClick={() => updateBadNewsSpecialSlots(-1)}
+              className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+            >
+              <Minus size={14} />
+            </button>
+            <span className="text-xs font-semibold text-amber-500/80">Especial de Elite</span>
+            <button
+              type="button"
+              onClick={() => updateBadNewsSpecialSlots(1)}
+              className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
         </div>
+
       </div>
 
       {/* Infusões Sintonizadas do Artífice */}
