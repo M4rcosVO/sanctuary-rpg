@@ -80,7 +80,11 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
   const startAutoScroll = useCallback(() => {
     if (autoScrollRef.current) clearInterval(autoScrollRef.current)
     autoScrollRef.current = setInterval(() => {
-      setCarouselOffset((prev) => (prev + 1) % Math.max(weapons.length, 1))
+      setCarouselOffset((prev) => {
+        const nextIdx = (prev + 1) % Math.max(weapons.length, 1)
+        setSelectedWeaponIndex(nextIdx) // Atualiza o card de exibição junto com o scroll automático
+        return nextIdx
+      })
     }, 2500)
   }, [weapons.length])
 
@@ -114,19 +118,21 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
   const handleSelectWeapon = (idx: number) => {
     setSelectedWeaponIndex(idx)
     setCarouselOffset(idx)
-    pauseAutoScroll(4000)
+    pauseAutoScroll(30000) // Aguarda 30 segundos antes de retomar o auto-scroll
   }
 
   const handleCarouselPrev = () => {
-    const newOffset = (carouselOffset - 1 + weapons.length) % weapons.length
-    setCarouselOffset(newOffset)
-    pauseAutoScroll()
+    const newIdx = (selectedWeaponIndex - 1 + weapons.length) % weapons.length
+    setSelectedWeaponIndex(newIdx)
+    setCarouselOffset(newIdx)
+    pauseAutoScroll(30000) // Aguarda 30 segundos antes de retomar o auto-scroll
   }
 
   const handleCarouselNext = () => {
-    const newOffset = (carouselOffset + 1) % weapons.length
-    setCarouselOffset(newOffset)
-    pauseAutoScroll()
+    const newIdx = (selectedWeaponIndex + 1) % weapons.length
+    setSelectedWeaponIndex(newIdx)
+    setCarouselOffset(newIdx)
+    pauseAutoScroll(30000) // Aguarda 30 segundos antes de retomar o auto-scroll
   }
 
   // ─── Ícones ─────────────────────────────────────────────────────────────────
@@ -377,15 +383,19 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
               </div>
             </div>
 
-            {/* Indicadores de posição */}
+            {/* Indicadores de posição sincronizados */}
             {weapons.length > 1 && (
               <div className="flex justify-center gap-1 mt-2">
                 {weapons.map((_, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => handleSelectWeapon(idx)}
-                    className={`rounded-full transition-all ${idx === selectedWeaponIndex
+                    onClick={() => {
+                      setSelectedWeaponIndex(idx)
+                      setCarouselOffset(idx)
+                      pauseAutoScroll(30000) // Aguarda 30 segundos ao clicar na bolinha
+                    }}
+                    className={`rounded-full transition-all ${idx === carouselOffset
                       ? 'w-4 h-1.5 bg-red-500'
                       : 'w-1.5 h-1.5 bg-zinc-700 hover:bg-zinc-500'
                       }`}
