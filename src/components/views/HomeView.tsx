@@ -72,10 +72,10 @@ export const HomeView: FC<HomeViewProps> = ({
       attributes: prev.attributes.map((a) =>
         a.id === attrId
           ? {
-              ...a,
-              value: val,
-              modifier: mod,
-            }
+            ...a,
+            value: val,
+            modifier: mod,
+          }
           : a
       ),
     }))
@@ -101,8 +101,8 @@ export const HomeView: FC<HomeViewProps> = ({
           s.proficiency === 'none'
             ? 'proficient'
             : s.proficiency === 'proficient'
-            ? 'expertise'
-            : 'none'
+              ? 'expertise'
+              : 'none'
         return { ...s, proficiency: next }
       }),
     }))
@@ -145,11 +145,10 @@ export const HomeView: FC<HomeViewProps> = ({
         <button
           type="button"
           onClick={() => setIsEditing(!isEditing)}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-200 border ${
-            isEditing
-              ? 'bg-emerald-600 text-white border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.7)]'
-              : 'bg-zinc-900/90 text-zinc-300 hover:text-white border-white/10 hover:border-red-600/50'
-          }`}
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-200 border ${isEditing
+            ? 'bg-emerald-600 text-white border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.7)]'
+            : 'bg-zinc-900/90 text-zinc-300 hover:text-white border-white/10 hover:border-red-600/50'
+            }`}
         >
           {isEditing ? (
             <>
@@ -269,7 +268,7 @@ export const HomeView: FC<HomeViewProps> = ({
       {/* 2. ESTATÍSTICAS DE COMBATE: PV, PV Temp, CA, Iniciativa, Deslocamento e Proficiência */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
         {/* PV Atual / Max */}
-        <div className="col-span-2 p-3.5 rounded-2xl bg-[#151318] border border-white/10 flex flex-col justify-between">
+        <div className="col-span-2 sm:col-span-4 p-3.5 rounded-2xl bg-[#151318] border border-white/10 flex flex-col justify-between">
           <div className="flex justify-between items-center mb-1">
             <span className="flex items-center space-x-1.5 text-red-400 text-xs font-bold">
               <Heart size={14} className="fill-red-500 text-red-500" />
@@ -321,7 +320,7 @@ export const HomeView: FC<HomeViewProps> = ({
         </div>
 
         {/* Classe de Armadura (CA) */}
-        <div className="p-3 rounded-2xl bg-[#151318] border border-white/10 flex flex-col items-center justify-center text-center">
+        <div className="col-span-1 sm:col-span-1 p-3 rounded-2xl bg-[#151318] border border-white/10 flex flex-col items-center justify-center text-center">
           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
             <Shield size={12} className="text-red-400" />
             <span>Armadura (CA)</span>
@@ -352,11 +351,10 @@ export const HomeView: FC<HomeViewProps> = ({
               })
             }
           }}
-          className={`p-3 rounded-2xl border flex flex-col items-center justify-center text-center transition-all ${
-            !isEditing
-              ? 'bg-[#151318] border-white/10 hover:border-red-600 hover:shadow-[0_0_12px_rgba(255,0,0,0.4)] cursor-pointer active:scale-95'
-              : 'bg-[#151318] border-white/10'
-          }`}
+          className={`col-span-1 sm:col-span-1 p-3 rounded-2xl border flex flex-col items-center justify-center text-center transition-all ${!isEditing
+            ? 'bg-[#151318] border-white/10 hover:border-red-600 hover:shadow-[0_0_12px_rgba(255,0,0,0.4)] cursor-pointer active:scale-95'
+            : 'bg-[#151318] border-white/10'
+            }`}
           title={!isEditing ? 'Clique para rolar Iniciativa' : undefined}
         >
           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
@@ -379,7 +377,7 @@ export const HomeView: FC<HomeViewProps> = ({
         </div>
 
         {/* Deslocamento */}
-        <div className="p-3 rounded-2xl bg-[#151318] border border-white/10 flex flex-col items-center justify-center text-center">
+        <div className="col-span-1 sm:col-span-1 p-3 rounded-2xl bg-[#151318] border border-white/10 flex flex-col items-center justify-center text-center">
           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
             <Zap size={12} className="text-yellow-400" />
             <span>Deslocamento</span>
@@ -399,7 +397,7 @@ export const HomeView: FC<HomeViewProps> = ({
         </div>
 
         {/* Bônus de Proficiência */}
-        <div className="p-3 rounded-2xl bg-[#151318] border border-white/10 flex flex-col items-center justify-center text-center">
+        <div className="col-span-1 sm:col-span-1 p-3 rounded-2xl bg-[#151318] border border-white/10 flex flex-col items-center justify-center text-center">
           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
             <Award size={12} className="text-red-400" />
             <span>Proficiência</span>
@@ -443,11 +441,10 @@ export const HomeView: FC<HomeViewProps> = ({
                   })
                 }
               }}
-              className={`p-2.5 rounded-2xl border transition-all flex flex-col items-center justify-center text-center group ${
-                isEditing
-                  ? 'bg-[#151318] border-white/10'
-                  : 'bg-[#151318] border-white/10 hover:border-red-600 hover:shadow-[0_0_15px_rgba(255,0,0,0.4)] cursor-pointer active:scale-95'
-              }`}
+              className={`p-2.5 rounded-2xl border transition-all flex flex-col items-center justify-center text-center group ${isEditing
+                ? 'bg-[#151318] border-white/10'
+                : 'bg-[#151318] border-white/10 hover:border-red-600 hover:shadow-[0_0_15px_rgba(255,0,0,0.4)] cursor-pointer active:scale-95'
+                }`}
             >
               <span className="text-[10px] font-bold text-zinc-400 group-hover:text-red-400 transition-colors uppercase">
                 {attr.short}
@@ -508,28 +505,25 @@ export const HomeView: FC<HomeViewProps> = ({
                     })
                   }
                 }}
-                className={`p-2.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
-                  attr.savingThrowProficient
-                    ? 'bg-red-950/40 border-red-700/60 shadow-[0_0_10px_rgba(255,0,0,0.2)]'
-                    : 'bg-black/40 border-white/5 hover:border-white/20'
-                }`}
+                className={`p-2.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${attr.savingThrowProficient
+                  ? 'bg-red-950/40 border-red-700/60 shadow-[0_0_10px_rgba(255,0,0,0.2)]'
+                  : 'bg-black/40 border-white/5 hover:border-white/20'
+                  }`}
                 title={isEditing ? 'Clique para alternar proficiência' : `Rolar Salvaguarda de ${attr.name}`}
               >
                 <div className="flex items-center space-x-2">
                   <div
-                    className={`w-3 h-3 rounded-full border flex items-center justify-center ${
-                      attr.savingThrowProficient
-                        ? 'border-red-500 bg-red-600 shadow-[0_0_6px_rgba(255,0,0,0.8)]'
-                        : 'border-zinc-600 bg-black'
-                    }`}
+                    className={`w-3 h-3 rounded-full border flex items-center justify-center ${attr.savingThrowProficient
+                      ? 'border-red-500 bg-red-600 shadow-[0_0_6px_rgba(255,0,0,0.8)]'
+                      : 'border-zinc-600 bg-black'
+                      }`}
                   />
                   <span className="text-xs font-bold text-zinc-200">{attr.name}</span>
                 </div>
 
                 <span
-                  className={`text-xs font-bold font-mono ${
-                    attr.savingThrowProficient ? 'text-red-400' : 'text-zinc-400'
-                  }`}
+                  className={`text-xs font-bold font-mono ${attr.savingThrowProficient ? 'text-red-400' : 'text-zinc-400'
+                    }`}
                 >
                   {saveMod >= 0 ? `+${saveMod}` : saveMod}
                 </span>
@@ -570,24 +564,22 @@ export const HomeView: FC<HomeViewProps> = ({
                     })
                   }
                 }}
-                className={`px-3 py-2 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
-                  skill.proficiency === 'expertise'
-                    ? 'bg-amber-950/30 border-amber-600/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
-                    : skill.proficiency === 'proficient'
+                className={`px-3 py-2 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${skill.proficiency === 'expertise'
+                  ? 'bg-amber-950/30 border-amber-600/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                  : skill.proficiency === 'proficient'
                     ? 'bg-red-950/30 border-red-700/50'
                     : 'bg-black/40 border-white/5 hover:border-red-900/40'
-                }`}
+                  }`}
               >
                 <div className="flex items-center space-x-2.5">
                   {/* Marcador de Proficiência/Expertise */}
                   <div
-                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center flex-shrink-0 ${
-                      skill.proficiency === 'expertise'
-                        ? 'border-amber-400 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.9)]'
-                        : skill.proficiency === 'proficient'
+                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center flex-shrink-0 ${skill.proficiency === 'expertise'
+                      ? 'border-amber-400 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.9)]'
+                      : skill.proficiency === 'proficient'
                         ? 'border-red-500 bg-red-600 shadow-[0_0_6px_rgba(255,0,0,0.8)]'
                         : 'border-zinc-700 bg-black'
-                    }`}
+                      }`}
                   >
                     {skill.proficiency === 'expertise' && <Sparkles size={8} className="text-black" />}
                   </div>
@@ -605,13 +597,12 @@ export const HomeView: FC<HomeViewProps> = ({
                     </span>
                   )}
                   <span
-                    className={`text-xs font-bold font-mono ${
-                      skill.proficiency === 'expertise'
-                        ? 'text-amber-300'
-                        : skill.proficiency === 'proficient'
+                    className={`text-xs font-bold font-mono ${skill.proficiency === 'expertise'
+                      ? 'text-amber-300'
+                      : skill.proficiency === 'proficient'
                         ? 'text-red-400'
                         : 'text-zinc-400'
-                    }`}
+                      }`}
                   >
                     {totalMod >= 0 ? `+${totalMod}` : totalMod}
                   </span>
