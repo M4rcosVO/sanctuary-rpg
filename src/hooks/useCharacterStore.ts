@@ -58,8 +58,8 @@ const DEFAULT_CHARACTERS: Character[] = [
     initiative: 2,
     proficiency: 2,
     passivePerception: 12,
-    profileImageUrl: undefined,
-    imageGallery: [],
+    profileImageUrl: './Salazar Von Ataraxia Perfil.jpg',
+    imageGallery: ['./Salazar Von Ataraxia Perfil.jpg', './Salazar Von Ataraxia.jpg', './Salazar sem faixas.jpg'],
     attributes: [
       { id: 'for', name: 'Força', short: 'FOR', value: 8, modifier: -1, savingThrowProficient: false },
       { id: 'des', name: 'Destreza', short: 'DES', value: 14, modifier: 2, savingThrowProficient: true },
