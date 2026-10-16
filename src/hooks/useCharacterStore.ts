@@ -204,8 +204,8 @@ const DEFAULT_CHARACTERS: Character[] = [
       },
       {
         id: 'tw-2',
-        name: 'A Lista Carmesim',
-        category: 'Arma de fogo · (Pacto) · Disparo Hemorrágico',
+        name: 'Disparo Hemorrágico',
+        category: 'A Lista Carmesim',
         damage: '1d10 + 5 + 1d6',
         damageType: 'Perfurante e Sangramento',
         range: '2m /96 m',
@@ -221,8 +221,8 @@ const DEFAULT_CHARACTERS: Character[] = [
       },
       {
         id: 'tw-3',
-        name: 'A Lista Carmesim',
-        category: 'Arma de fogo · (Pacto) · Disparo Perfurante',
+        name: 'Disparo Perfurante',
+        category: 'A Lista Carmesim',
         damage: '1d10 + 5',
         damageType: 'Perfurante e Contundente',
         range: '2m /96 m',
@@ -255,8 +255,8 @@ const DEFAULT_CHARACTERS: Character[] = [
       },
       {
         id: 'tw-5',
-        name: 'Má Notícia',
-        category: 'Rifle de precisão · Habilidade Única',
+        name: 'Habilidade exclusiva · Tiro de Sentença',
+        category: 'Má Notícia',
         damage: '4d12 + 5',
         damageDice: [{ die: 'd12', count: 4 }],
         damageType: 'Perfurante ou Mágico',
@@ -266,7 +266,7 @@ const DEFAULT_CHARACTERS: Character[] = [
         dmgBonus: 5,
         iconType: 'rifle',
         description:
-          'Habilidade exclusiva: Tiro de Sentença: Uma vez por descanso curto, Salazar pode preparar a Má Notícia para um disparo devastador.Preparação. Como ação bônus, Salazar mira e concentra o poder do pacto em um alvo que consiga ver. Até o fim do turno, ele não pode se mover voluntariamente. Se perder a concentração por alguma interrupção narrativa determinada pelo Mestre, o disparo especial é desperdiçado.O disparo passa a causar 4d12 de dano perfurante no total, antes de adicionar o modificador de Carisma.',
+          'Habilidade exclusiva · Tiro de Sentença: Uma vez por descanso curto, Salazar pode preparar a Má Notícia para um disparo devastador.Preparação. Como ação bônus, Salazar mira e concentra o poder do pacto em um alvo que consiga ver. Até o fim do turno, ele não pode se mover voluntariamente. Se perder a concentração por alguma interrupção narrativa determinada pelo Mestre, o disparo especial é desperdiçado.O disparo passa a causar 4d12 de dano perfurante no total, antes de adicionar o modificador de Carisma.',
         profileImageUrl: undefined,
         imageGallery: [],
       },
