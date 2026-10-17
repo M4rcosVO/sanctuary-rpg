@@ -363,15 +363,46 @@ const DEFAULT_CHARACTERS: Character[] = [
       gadgetSlots: { current: 4, max: 4 },
       infusionsActive: { current: 3, max: 3 },
       activeConditions: [],
+      carmesimSlots: { current: 6, max: 6 },
+      badNewsSlots: { current: 1, max: 1 },
+      badNewsSpecialSlots: { current: 1, max: 1 },
     },
   },
 ]
 
-export function useCharacterStore(): UseCharacterStoreReturn {
+// Garante que todas as propriedades de tacticalState existam para evitar undefined
+function ensureTacticalState(char: Character): Character {
+  return {
+    ...char,
+    tacticalState: {
+      inspiration: char.tacticalState?.inspiration ?? false,
+      gadgetSlots: char.tacticalState?.gadgetSlots ?? { current: 4, max: 4 },
+      infusionsActive: char.tacticalState?.infusionsActive ?? { current: 3, max: 3 },
+      activeConditions: char.tacticalState?.activeConditions ?? [],
+      carmesimSlots: char.tacticalState?.carmesimSlots ?? { current: 6, max: 6 },
+      badNewsSlots: char.tacticalState?.badNewsSlots ?? { current: 1, max: 1 },
+      badNewsSpecialSlots: char.tacticalState?.badNewsSpecialSlots ?? { current: 1, max: 1 },
+    },
+  }
+}
+
+export function useCharacterStore(userIdParam?: string): UseCharacterStoreReturn {
+  const initialUserId = (
+    userIdParam ||
+    loadActiveIdLocal() ||
+    localStorage.getItem('sanctuary_user_id') ||
+    'CapMarcola'
+  ).trim()
+
+  const [cloudUserId, setCloudUserId] = useState<string>(initialUserId)
+
   // Carrega personagens: localStorage tem prioridade para resposta imediata
   const [characters, setCharactersState] = useState<Character[]>(() => {
     const local = loadCharactersLocal()
-    return local && local.length > 0 ? local : DEFAULT_CHARACTERS
+    if (local && local.length > 0) {
+      return local.map(ensureTacticalState)
+    }
+    return DEFAULT_CHARACTERS.map(ensureTacticalState)
   })
 
   const [selectedCharacterId, setSelectedCharacterIdState] = useState<string>(() => {
@@ -380,51 +411,80 @@ export function useCharacterStore(): UseCharacterStoreReturn {
 
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle')
   const [syncError, setSyncError] = useState<string | null>(null)
-  const [cloudUserId, setCloudUserId] = useState<string | null>(null)
 
-  // Ref para debounce de salvamento na nuvem
+  // Ref para debounce de salvamento na nuvem e referência de personagens atuais
+  const charactersRef = useRef(characters)
+  charactersRef.current = characters
+
   const saveDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // ─── Configurar listener do Supabase Auth ─────────────────────────────────
+  // Atualiza cloudUserId quando userIdParam mudar
+  useEffect(() => {
+    if (userIdParam && userIdParam.trim() && userIdParam.trim() !== cloudUserId) {
+      setCloudUserId(userIdParam.trim())
+    }
+  }, [userIdParam, cloudUserId])
+
+  // ─── Carregar e sincronizar com Supabase ao iniciar ───────────────────────
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return
 
-    // Verificar sessão atual
+    let activeUser = cloudUserId || 'CapMarcola'
+
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
+      if (session?.user?.id) {
+        activeUser = session.user.id
         setCloudUserId(session.user.id)
-        // Carregar dados da nuvem ao iniciar
-        loadCharactersFromCloud(session.user.id).then(({ data }) => {
-          if (data && data.length > 0) {
-            setCharactersState(data)
-            saveCharactersLocal(data) // atualiza cache local
-          }
-        })
       }
+
+      // Buscar da nuvem
+      loadCharactersFromCloud(activeUser).then(({ data, error }) => {
+        if (data && data.length > 0) {
+          const normalized = data.map(ensureTacticalState)
+          setCharactersState(normalized)
+          saveCharactersLocal(normalized)
+          setSyncStatus('saved')
+          setTimeout(() => setSyncStatus('idle'), 2500)
+        } else if (!error) {
+          // Se não existir dados salvos na nuvem ainda para este usuário, sincroniza a ficha inicial
+          const local = loadCharactersLocal() || DEFAULT_CHARACTERS
+          const normalized = local.map(ensureTacticalState)
+          syncCharactersToCloud(activeUser, normalized).then(({ error: syncErr }) => {
+            if (!syncErr) {
+              setSyncStatus('saved')
+              setTimeout(() => setSyncStatus('idle'), 2500)
+            }
+          })
+        }
+      })
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCloudUserId(session?.user?.id ?? null)
+      if (session?.user?.id) {
+        setCloudUserId(session.user.id)
+      }
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [cloudUserId])
 
   // ─── Persistência com debounce ────────────────────────────────────────────
   const persistCharacters = useCallback(
     (newChars: Character[]) => {
+      const targetUser = cloudUserId || 'CapMarcola'
+
       // 1. Salvar local imediatamente
       saveCharactersLocal(newChars)
 
-      // 2. Sincronizar na nuvem com debounce de 1.5s
+      // 2. Sincronizar na nuvem com debounce de 1.2s
       if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current)
       if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current)
 
-      if (isSupabaseConfigured && cloudUserId) {
+      if (isSupabaseConfigured && supabase) {
         setSyncStatus('saving')
         saveDebounceRef.current = setTimeout(async () => {
-          const { error } = await syncCharactersToCloud(cloudUserId, newChars)
+          const { error } = await syncCharactersToCloud(targetUser, newChars)
           if (error) {
             setSyncStatus('error')
             setSyncError(error)
@@ -434,7 +494,7 @@ export function useCharacterStore(): UseCharacterStoreReturn {
           }
           // Volta para 'idle' após 3s
           statusTimeoutRef.current = setTimeout(() => setSyncStatus('idle'), 3000)
-        }, 1500)
+        }, 1200)
       } else {
         // localStorage apenas — feedback imediato
         setSyncStatus('saved')
@@ -446,8 +506,9 @@ export function useCharacterStore(): UseCharacterStoreReturn {
 
   const setCharacters = useCallback(
     (chars: Character[]) => {
-      setCharactersState(chars)
-      persistCharacters(chars)
+      const normalized = chars.map(ensureTacticalState)
+      setCharactersState(normalized)
+      persistCharacters(normalized)
     },
     [persistCharacters]
   )
@@ -464,7 +525,7 @@ export function useCharacterStore(): UseCharacterStoreReturn {
     (updater: (prev: Character) => Character) => {
       setCharactersState((prevList) => {
         const newList = prevList.map((c) =>
-          c.id === activeCharacter.id ? updater(c) : c
+          c.id === activeCharacter.id ? ensureTacticalState(updater(c)) : c
         )
         persistCharacters(newList)
         return newList
@@ -505,9 +566,17 @@ export function useCharacterStore(): UseCharacterStoreReturn {
   )
 
   const forceSync = useCallback(async () => {
-    if (!isSupabaseConfigured || !cloudUserId) return
+    const targetUser = cloudUserId || 'CapMarcola'
+    saveCharactersLocal(characters)
+
+    if (!isSupabaseConfigured || !supabase) {
+      setSyncStatus('saved')
+      setTimeout(() => setSyncStatus('idle'), 2000)
+      return
+    }
+
     setSyncStatus('saving')
-    const { error } = await syncCharactersToCloud(cloudUserId, characters)
+    const { error } = await syncCharactersToCloud(targetUser, characters)
     if (error) {
       setSyncStatus('error')
       setSyncError(error)

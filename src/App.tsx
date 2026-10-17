@@ -13,16 +13,20 @@ import { InventoryView } from './components/views/InventoryView'
 import { TacticalView } from './components/views/TacticalView'
 import type { RollRequest, SystemType } from './types/character'
 import { useCharacterStore } from './hooks/useCharacterStore'
+import { isSupabaseConfigured } from './lib/supabase'
 
 type AuthStep = 'auth' | 'system-select' | 'character-select' | 'app'
 
 export function App() {
-  // ─── Fluxo de Autenticação ────────────────────────────────────────────────
+  // ─── Identificador de Usuário e Fluxo de Autenticação ─────────────────────
+  const [currentUser, setCurrentUser] = useState<string>(() => {
+    return localStorage.getItem('sanctuary_user_id') || 'CapMarcola'
+  })
   const [authStep, setAuthStep] = useState<AuthStep>('auth')
   const [currentSystem, setCurrentSystem] = useState<SystemType>('dnd5e')
 
   // ─── Estado central de personagens (com persistência automática) ──────────
-  const store = useCharacterStore()
+  const store = useCharacterStore(currentUser)
 
   // ─── UI State ─────────────────────────────────────────────────────────────
   const [currentTab, setCurrentTab] = useState<NavTab>('home')
@@ -148,6 +152,9 @@ export function App() {
         gadgetSlots: { current: 1, max: 1 },
         infusionsActive: { current: 0, max: 0 },
         activeConditions: [],
+        carmesimSlots: { current: 6, max: 6 },
+        badNewsSlots: { current: 1, max: 1 },
+        badNewsSpecialSlots: { current: 1, max: 1 },
       },
     } as any
 
@@ -167,7 +174,12 @@ export function App() {
   if (authStep === 'auth') {
     return (
       <AuthScreen
-        onLoginSuccess={() => setAuthStep('system-select')}
+        onLoginSuccess={(userIdentifier) => {
+          const user = userIdentifier?.trim() || 'CapMarcola'
+          setCurrentUser(user)
+          localStorage.setItem('sanctuary_user_id', user)
+          setAuthStep('system-select')
+        }}
       />
     )
   }
@@ -288,6 +300,10 @@ export function App() {
           setIsSettingsOpen(false)
           setAuthStep('auth')
         }}
+        currentUser={currentUser}
+        syncStatus={store.syncStatus}
+        onForceSync={store.forceSync}
+        isCloudConfigured={isSupabaseConfigured}
       />
     </div>
   )
