@@ -195,10 +195,10 @@ export const TacticalView: FC<TacticalViewProps> = ({
         <div className="p-4 rounded-3xl bg-[#141217] border border-white/10 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
-              <Wrench size={10} className="text-red-400" />
+              <Wrench size={10} className="text-cyan-400" />
               <span>Gambiarras</span>
             </span>
-            <span className="text-xs font-mono font-bold text-red-400">
+            <span className="text-xs font-mono font-bold text-cyan-400">
               {tacticalState.gadgetSlots.current}/{tacticalState.gadgetSlots.max}
             </span>
           </div>
@@ -209,7 +209,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
                 <div
                   key={i}
                   className={`h-2.5 flex-1 rounded-full transition-all ${i < tacticalState.gadgetSlots.current
-                    ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
+                    ? 'bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.8)]'
                     : 'bg-zinc-800'
                     }`}
                 />
@@ -253,15 +253,28 @@ export const TacticalView: FC<TacticalViewProps> = ({
 
         <div className="my-2">
           <div className="flex space-x-1 my-1">
-            {Array.from({ length: (tacticalState.carmesimSlots?.max ?? 6) }).map((_, i) => (
-              <div
-                key={i}
-                className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.carmesimSlots?.current ?? 6)
-                  ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
-                  : 'bg-zinc-800'
-                  }`}
-              />
-            ))}
+            {Array.from({ length: (tacticalState.carmesimSlots?.max ?? 6) }).map((_, i) => {
+              // Padrão: Disparos Normais (Laranja Vulcânico)
+              let activeColor = 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]'
+
+              if (i === 2) {
+                // 3º Disparo: Anti-Estrutura/Objetos (Verde Solvente)
+                activeColor = 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]'
+              } else if (i === 5) {
+                // 6º (Último) Disparo: Sangramento (Carmesim Profundo)
+                activeColor = 'bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.9)]'
+              }
+
+              return (
+                <div
+                  key={i}
+                  className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.carmesimSlots?.current ?? 6)
+                    ? activeColor
+                    : 'bg-zinc-800'
+                    }`}
+                />
+              )
+            })}
           </div>
           <p className="text-[11px] text-zinc-400">Munição e Disparos de Arma</p>
         </div>
@@ -292,10 +305,10 @@ export const TacticalView: FC<TacticalViewProps> = ({
         <div className="flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center space-x-1">
-              <Wrench size={10} className="text-red-400" />
+              <Wrench size={10} className="text-rose-400" />
               <span>Má Notícia - Disparo Normal</span>
             </span>
-            <span className="text-xs font-mono font-bold text-red-400">
+            <span className="text-xs font-mono font-bold text-rose-400">
               {(tacticalState.badNewsSlots?.current ?? 1)}/{(tacticalState.badNewsSlots?.max ?? 1)}
             </span>
           </div>
@@ -306,7 +319,7 @@ export const TacticalView: FC<TacticalViewProps> = ({
                 <div
                   key={i}
                   className={`h-2.5 flex-1 rounded-full transition-all ${i < (tacticalState.badNewsSlots?.current ?? 1)
-                    ? 'bg-red-600 shadow-[0_0_8px_rgba(255,0,0,0.8)]'
+                    ? 'bg-rose-600 shadow-[0_0_8px_rgba(225,29,72,0.8)]'
                     : 'bg-zinc-800'
                     }`}
                 />
