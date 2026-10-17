@@ -407,7 +407,10 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
 
           {/* Estande de Exposição Principal */}
           {activeWeapon && (
-            <div className="relative rounded-3xl bg-gradient-to-b from-[#1b1522] via-[#121015] to-black border border-red-700/60 p-5 sm:p-6 shadow-2xl overflow-hidden text-center">
+            <div
+              onMouseEnter={() => pauseAutoScroll(120000)} // Pausa enquanto o mouse estiver sobre o card
+              className="relative rounded-3xl bg-gradient-to-b from-[#1b1522] via-[#121015] to-black border border-red-700/60 p-5 sm:p-6 shadow-2xl overflow-hidden text-center"
+            >
               {/* Efeito Spotlight */}
               <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-gradient-to-b from-red-600/35 via-red-900/15 to-transparent blur-3xl" />
               <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-64 h-24 bg-red-600/20 rounded-full blur-2xl" />
@@ -438,7 +441,13 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
                 </span>
 
                 {/* Imagem ou ícone da arma + Galeria */}
-                <div className="relative mb-2">
+                <div
+                  className="relative mb-2"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    pauseAutoScroll(60000) // Congela o carrossel ao clicar na imagem/galeria
+                  }}
+                >
                   <ImageGallery
                     profileImageUrl={activeWeapon.profileImageUrl}
                     imageGallery={activeWeapon.imageGallery}
@@ -458,7 +467,6 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
                       onUpdateWeapons(updated)
                     }}
                   />
-                  {/* Glow do pedestal */}
                   <div className="absolute inset-0 rounded-2xl bg-red-600/20 animate-pulse pointer-events-none -z-10 blur-sm" />
                 </div>
 
@@ -519,7 +527,11 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
-                      onClick={() => handleRollAttack(activeWeapon)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        pauseAutoScroll(30000)
+                        handleRollAttack(activeWeapon)
+                      }}
                       className="py-3 px-3 rounded-2xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(255,0,0,0.6)] transition-all flex items-center justify-center space-x-1.5"
                     >
                       <Dices size={16} />
@@ -527,7 +539,11 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleRollDamage(activeWeapon)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        pauseAutoScroll(30000)
+                        handleRollDamage(activeWeapon)
+                      }}
                       className="py-3 px-3 rounded-2xl bg-[#2e0e15] hover:bg-[#45121e] border border-red-800/60 active:scale-95 text-red-200 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-1.5"
                     >
                       <Zap size={15} className="text-amber-400" />
@@ -536,7 +552,11 @@ export const ArsenalView: FC<ArsenalViewProps> = ({ weapons, onTriggerRoll, onUp
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleRollCombined(activeWeapon)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      pauseAutoScroll(60000)
+                      handleRollCombined(activeWeapon)
+                    }}
                     className="w-full py-2.5 px-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-white/10 hover:border-red-600/50 text-zinc-200 font-semibold text-xs tracking-wider transition-all flex items-center justify-center space-x-1.5"
                   >
                     <Sparkles size={14} className="text-amber-400" />
