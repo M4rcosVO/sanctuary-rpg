@@ -199,7 +199,7 @@ const DEFAULT_CHARACTERS: Character[] = [
         damageDice: [{ die: 'd10', count: 1 }],
         description:
           'Uma pepperbox de seis disparos, construída para eliminar alvos com rapidez e permitir que Salazar continue se movimentando ou manipulando a situação ao redor. O tiro padrão: causa 1d10 de dano perfurante, mais seu modificador de Carisma. É o disparo que você pode usar o combate inteiro, sem gastar recursos especiais.',
-        profileImageUrl: undefined,
+        profileImageUrl: './A Lista - Estojo.jpg',
         imageGallery: [],
       },
       {
@@ -250,7 +250,7 @@ const DEFAULT_CHARACTERS: Character[] = [
         iconType: 'rifle',
         description:
           'Uma arma longa, pesada e extremamente letal. Ideal para Salazar observar um alvo de longe, escolher o momento e resolver o problema com um único disparo.',
-        profileImageUrl: undefined,
+        profileImageUrl: './public/Má Notícia.jpg',
         imageGallery: [],
       },
       {
@@ -284,7 +284,7 @@ const DEFAULT_CHARACTERS: Character[] = [
         iconType: 'sword',
         description:
           'Uma bengala elegante, aparentemente comum, que revela uma lâmina fina ao longo de sua haste e esconde um mecanismo que libera espinhos ocultos.',
-        profileImageUrl: undefined,
+        profileImageUrl: './public/Briarsbane.jpg',
         imageGallery: [],
       },
     ],
