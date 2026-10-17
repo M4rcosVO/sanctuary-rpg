@@ -200,7 +200,7 @@ const DEFAULT_CHARACTERS: Character[] = [
         description:
           'Uma pepperbox de seis disparos, construída para eliminar alvos com rapidez e permitir que Salazar continue se movimentando ou manipulando a situação ao redor. O tiro padrão: causa 1d10 de dano perfurante, mais seu modificador de Carisma. É o disparo que você pode usar o combate inteiro, sem gastar recursos especiais.',
         profileImageUrl: './A Lista - Estojo.jpg',
-        imageGallery: [],
+        imageGallery: ['./A Lista - Estojo.jpg', './Disparo Carmesim.jpg'],
       },
       {
         id: 'tw-2',
@@ -216,8 +216,8 @@ const DEFAULT_CHARACTERS: Character[] = [
         damageDice: [{ die: 'd10', count: 1 }, { die: 'd6', count: 1, }],
         description:
           '1º Disparo · Ao acertar uma criatura, o projétil deixa uma ferida sobrenatural que continua sangrando após o impacto.',
-        profileImageUrl: undefined,
-        imageGallery: [],
+        profileImageUrl: './Disparo sangrento.jpg',
+        imageGallery: ['./Disparo sangrento.jpg'],
       },
       {
         id: 'tw-3',
@@ -233,8 +233,8 @@ const DEFAULT_CHARACTERS: Character[] = [
         damageDice: [{ die: 'd10', count: 1 }],
         description:
           '4º Disparo · O projétil concentra o pacto em uma ponta capaz de atravessar defesas. Ao disparar contra uma criatura, o ataque ignora meia cobertura e cobertura de três quartos. Contra um objeto ou uma barreira, o disparo causa dano dobrado.',
-        profileImageUrl: undefined,
-        imageGallery: [],
+        profileImageUrl: './Disparo demolidor.jpg',
+        imageGallery: ['./Disparo demolidor.jpg'],
       },
       {
         id: 'tw-4',
@@ -250,8 +250,8 @@ const DEFAULT_CHARACTERS: Character[] = [
         iconType: 'rifle',
         description:
           'Uma arma longa, pesada e extremamente letal. Ideal para Salazar observar um alvo de longe, escolher o momento e resolver o problema com um único disparo.',
-        profileImageUrl: './public/Má Notícia.jpg',
-        imageGallery: [],
+        profileImageUrl: './Má Notícia.jpg',
+        imageGallery: ['./Má Notícia.jpg', './Má Notícia Disparo normal.jpg'],
       },
       {
         id: 'tw-5',
@@ -267,8 +267,8 @@ const DEFAULT_CHARACTERS: Character[] = [
         iconType: 'rifle',
         description:
           'Habilidade exclusiva · Tiro de Sentença: Uma vez por descanso curto, Salazar pode preparar a Má Notícia para um disparo devastador.Preparação. Como ação bônus, Salazar mira e concentra o poder do pacto em um alvo que consiga ver. Até o fim do turno, ele não pode se mover voluntariamente. Se perder a concentração por alguma interrupção narrativa determinada pelo Mestre, o disparo especial é desperdiçado.O disparo passa a causar 4d12 de dano perfurante no total, antes de adicionar o modificador de Carisma.',
-        profileImageUrl: undefined,
-        imageGallery: [],
+        profileImageUrl: './tiro de sentenca.jpg',
+        imageGallery: ['./tiro de sentenca.jpg'],
       },
       {
         id: 'tw-6',
@@ -284,8 +284,8 @@ const DEFAULT_CHARACTERS: Character[] = [
         iconType: 'sword',
         description:
           'Uma bengala elegante, aparentemente comum, que revela uma lâmina fina ao longo de sua haste e esconde um mecanismo que libera espinhos ocultos.',
-        profileImageUrl: './public/Briarsbane.jpg',
-        imageGallery: [],
+        profileImageUrl: './Briarsbane — A Espinheira.jpg',
+        imageGallery: ['./Briarsbane — A Espinheira.jpg'],
       },
     ],
     inventory: [
